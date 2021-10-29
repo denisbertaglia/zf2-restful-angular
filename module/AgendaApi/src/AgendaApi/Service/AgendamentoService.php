@@ -6,10 +6,10 @@ use AgendaApi\Model\Agendamento;
 
 class AgendamentoService implements AgendamentoServiceInterface
 {
-    protected  $array;
+    protected  $data;
     public function __construct()
     {
-        $this->array = array(
+        $this->data = array(
             array(
                 'id'    => 1,
                 'data' => '2000-07-01T00:00:00+00:00',

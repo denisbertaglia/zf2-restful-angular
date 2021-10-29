@@ -16,11 +16,12 @@ class AgendamentoController extends AbstractRestfulController
     //public function __construct()
     public function __construct(AgendamentoServiceInterface $agendamentoService)
     {
-       // $this->agendamentoService = $agendamentoService;
+       $this->agendamentoService = $agendamentoService;
     }
     
     public function getList()
     {   // Action used for GET requests without resource Id
+        $data = $this->agendamentoService->findAllAgendamentos();
         return new JsonModel(
             array(
                 'data' =>

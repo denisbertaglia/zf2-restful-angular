@@ -7,18 +7,12 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class AgendamentoControllerFactory  implements FactoryInterface
 {
-    /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     *
-     * @return mixed
-     */
+
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         
-        //$realServiceLocator = $serviceLocator->getServiceLocator();
-        $agendaService        = $serviceLocator->get('AgendaApi\Service\AgendamentoServiceInterface');
+        $realServiceLocator = $serviceLocator->getServiceLocator();
+        $agendaService        = $realServiceLocator->get('AgendaApi\Service\AgendamentoServiceInterface');
         return new AgendamentoController($agendaService);
     }
 }
