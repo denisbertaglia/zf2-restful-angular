@@ -6,7 +6,7 @@ return array(
             'agenda' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/agendamento[/:id]',
+                    'route'    => '/v1/agendamento[/:id]',
                     'constraints' => array(
                         'id'     => '[0-9]+',
                     ),

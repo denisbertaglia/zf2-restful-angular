@@ -1,8 +1,8 @@
 <?php
-// Filename: /module/Blog/src/Blog/Model/Post.php
+
 namespace AgendaApi\Model;
 
-class Agendamento implements AgendamentoInterface
+class Agendamento implements AgendamentoInterface, ArrayInterface
 {
     /**
      * @var int
@@ -109,5 +109,15 @@ class Agendamento implements AgendamentoInterface
     public function setEmailCliente($emailCliente)
     {
         $this->emailCliente = $emailCliente;
+    }
+
+    public function toArray(){
+        return [
+            'id' => $this->id,
+            'data' => $this->data,
+            'consultor' => $this->consultor,
+            'servico' => $this->servico,
+            'email_cliente' => $this->emailCliente,
+        ];
     }
 }

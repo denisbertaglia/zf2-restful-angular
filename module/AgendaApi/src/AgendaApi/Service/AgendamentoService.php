@@ -58,7 +58,7 @@ class AgendamentoService implements AgendamentoServiceInterface
         foreach ($this->data as $index => $post) {
             $agendamentos[] = $this->findAgendamento($index);
         }
-
+        
         return $agendamentos;
     }
 

@@ -2,6 +2,7 @@
 
 namespace AgendaApi\Controller;
 
+use AgendaApi\Model\Agendamento;
 use AgendaApi\Service\AgendamentoServiceInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
@@ -20,15 +21,15 @@ class AgendamentoController extends AbstractRestfulController
     }
     
     public function getList()
-    {   // Action used for GET requests without resource Id
+    {   
         $data = $this->agendamentoService->findAllAgendamentos();
+        $data = array_map(function (Agendamento $agendamento){
+            return $agendamento->toArray();
+        },$data);
+        
         return new JsonModel(
             array(
-                'data' =>
-                array(
-                    array('id' => 1, 'name' => 'Mothership', 'band' => 'Led Zeppelin'),
-                    array('id' => 2, 'name' => 'Coda',       'band' => 'Led Zeppelin'),
-                )
+                'data' => $data
             )
         );
     }
