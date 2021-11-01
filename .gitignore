@@ -10,14 +10,9 @@ composer.lock
 vendor/
 !vendor/README.md
 !vendor/ZF2/
+
 *.db
 
-**/dist/
-**/node_modules
-
-
-
-.DS_STORE
 
 /dist/
 /bazel-out

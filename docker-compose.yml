@@ -3,5 +3,11 @@ zf:
   dockerfile: Dockerfile
   ports:
    - "8082:80"
+   - "8083:81"
   volumes:
    - .:/var/www
+ui:
+  build: .
+  dockerfile: Dockerfile.ui
+  volumes:
+   - ./ui:/var/www/ui

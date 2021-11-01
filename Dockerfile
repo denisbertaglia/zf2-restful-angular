@@ -12,6 +12,8 @@ RUN chmod +x composer.phar && cp composer.phar /usr/bin/composer
 
 RUN mv /var/www/html /var/www/public
 
-RUN touch /var/www/data/banco.db
+COPY angular.conf  /etc/apache2/sites-available/
+
+RUN a2ensite angular.conf 
 
 WORKDIR /var/www
