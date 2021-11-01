@@ -32,4 +32,8 @@ return array(
             'ViewJsonStrategy',
         ),
     ),
+    'db' => array(
+        'driver' => 'Pdo',
+        'dsn'    => sprintf('sqlite:%s/data/banco.db', realpath(getcwd())),
+    ),
 );
