@@ -13,8 +13,6 @@ vendor/
 
 *.db
 
-
-/dist/
 /bazel-out
 /integration/bazel/bazel-*
 *.log
@@ -66,3 +64,8 @@ node_modules
 
 # Husky
 **.husky/_
+
+**/dist/*.*
+ui/dist/*
+ui/dist/ui/*
+ui/dist/ui/index.html
