@@ -111,8 +111,19 @@ class Agendamento implements AgendamentoInterface, ArrayInterface
         $this->emailCliente = $emailCliente;
     }
 
-    public function toArray(){
-        return [
+    public function exchangeArray(array $data)
+    {
+        $this->id = (!empty($data['id'])) ? $data['id']: null;
+        $this->data = (!empty($data['data'])) ? $data['data']: null;
+        $this->consultor = (!empty($data['consultor'])) ? $data['consultor']: null;
+        $this->servico = (!empty($data['servico'])) ? $data['servico']: null;
+        $this->emailCliente = (!empty($data['emailCliente'])) ? $data['emailCliente']: null;
+
+    }
+
+    public function getArrayCopy()
+    {
+        return[
             'id' => $this->id,
             'data' => $this->data,
             'consultor' => $this->consultor,
@@ -120,4 +131,5 @@ class Agendamento implements AgendamentoInterface, ArrayInterface
             'email_cliente' => $this->emailCliente,
         ];
     }
+
 }

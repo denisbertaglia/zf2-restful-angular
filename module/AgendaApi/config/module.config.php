@@ -18,22 +18,27 @@ return array(
         ),
     ),
     'controllers' => array(
-        'factories' => array(
-            'AgendaApi\Controller\Agendamento' => 'AgendaApi\Factory\AgendamentoControllerFactory'
+        'invokables' => array(
+           'AgendaApi\Controller\Agendamento' => 'AgendaApi\Controller\AgendamentoController'
         )
+    ),
+    
+    'db' => array(
+        'driver' => 'Pdo',
+        'dsn'    => sprintf('sqlite:%s/data/banco.db', realpath(getcwd())),
     ),
     'service_manager' => array(
         'invokables' => array(
             'AgendaApi\Service\AgendamentoServiceInterface' => 'AgendaApi\Service\AgendamentoService'
         ),
+        'factories' => array(
+            'Zend\Db\Adapter\Adapter'
+                     => 'Zend\Db\Adapter\AdapterServiceFactory',
+        )
     ),
     'view_manager' => array(
         'strategies' => array(
             'ViewJsonStrategy',
         ),
-    ),
-    'db' => array(
-        'driver' => 'Pdo',
-        'dsn'    => sprintf('sqlite:%s/data/banco.db', realpath(getcwd())),
     ),
 );

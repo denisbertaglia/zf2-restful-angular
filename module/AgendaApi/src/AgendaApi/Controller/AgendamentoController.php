@@ -3,33 +3,25 @@
 namespace AgendaApi\Controller;
 
 use AgendaApi\Model\Agendamento;
+use AgendaApi\Model\AgendamentoTable;
 use AgendaApi\Service\AgendamentoServiceInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 class AgendamentoController extends AbstractRestfulController
 {
-    /**
-     * @var \AgendaApi\Service\AgendamentoServiceInterface
-     */
-    protected $agendamentoService;
 
-    //public function __construct()
-    public function __construct(AgendamentoServiceInterface $agendamentoService)
+    public function __construct()
     {
-       $this->agendamentoService = $agendamentoService;
     }
     
     public function getList()
     {   
-        $data = $this->agendamentoService->findAllAgendamentos();
-        $data = array_map(function (Agendamento $agendamento){
-            return $agendamento->toArray();
-        },$data);
-        
+        $agendamento = $this->getAlbumTable();
+        $data = $agendamento->fetchAll();
         return new JsonModel(
             array(
-                'data' => $data
+                'data' => $data->toArray()
             )
         );
     }
@@ -53,4 +45,16 @@ class AgendamentoController extends AbstractRestfulController
     {   // Action used for DELETE requests
         return new JsonModel(array('data' => 'album id 3 deleted'));
     }
+    
+    /**
+     * @return AgendamentoTable
+     */
+    public function getAlbumTable()
+    {
+            $sm = $this->getServiceLocator();
+            $albumTable = $sm->get('AgendaTable');
+        
+        return $albumTable;
+    }
+
 }
