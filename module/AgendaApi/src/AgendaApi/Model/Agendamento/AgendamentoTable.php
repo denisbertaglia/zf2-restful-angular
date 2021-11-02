@@ -1,8 +1,8 @@
 <?php
 
-namespace AgendaApi\Model;
+namespace AgendaApi\Model\Agendamento;
 
-use AgendaApi\Model\Agendamento;
+use AgendaApi\Model\Agendamento\Agendamento;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -19,12 +19,8 @@ class AgendamentoTable
      */
     public function fetchAll()
     {
-        $fetch = [];
         $resultSet = $this->tableGateway->select();
-        if(!is_null($resultSet)){
-            $fetch = $resultSet;
-        }
-        return $fetch;
+        return $resultSet;
     }
 
     public function getAlbum($id)

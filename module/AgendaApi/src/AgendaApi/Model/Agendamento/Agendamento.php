@@ -1,8 +1,10 @@
 <?php
 
-namespace AgendaApi\Model;
+namespace AgendaApi\Model\Agendamento;
 
-class Agendamento implements AgendamentoInterface, ArrayInterface
+use AgendaApi\Model\ArrayInterface;
+
+class Agendamento implements ArrayInterface
 {
     /**
      * @var int

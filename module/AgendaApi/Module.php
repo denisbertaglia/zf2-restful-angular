@@ -2,8 +2,10 @@
 
 namespace AgendaApi;
 
-use AgendaApi\Model\Agendamento;
-use AgendaApi\Model\AgendamentoTable;
+use AgendaApi\Model\Agendamento\Agendamento;
+use AgendaApi\Model\Agendamento\AgendamentoTable;
+use AgendaApi\Model\Servicos\Servicos;
+use AgendaApi\Model\Servicos\ServicosTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Mvc\ModuleRouteListener;
@@ -95,6 +97,17 @@ class Module
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Agendamento());
                     return new TableGateway('Agendamento', $dbAdapter, null, $resultSetPrototype);
+                },
+                'ServicosTable' =>  function($sm) {
+                    $tableGateway = $sm->get('ServicosTableGateway');
+                    $table = new ServicosTable($tableGateway);
+                    return $table;
+                },
+                'ServicosTableGateway'   =>  function($sm) {;
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Servicos());
+                    return new TableGateway('Servicos', $dbAdapter, null, $resultSetPrototype);
                 },
             ),
         );

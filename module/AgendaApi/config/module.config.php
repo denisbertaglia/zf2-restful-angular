@@ -15,11 +15,24 @@ return array(
                     ),
                 ),
             ),
+            'servicos' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/v1/servicos[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'AgendaApi\Controller\Servicos',
+                    ),
+                ),
+            ),
         ),
     ),
     'controllers' => array(
         'invokables' => array(
-           'AgendaApi\Controller\Agendamento' => 'AgendaApi\Controller\AgendamentoController'
+            'AgendaApi\Controller\Agendamento' => 'AgendaApi\Controller\AgendamentoController',
+            'AgendaApi\Controller\Servicos' => 'AgendaApi\Controller\ServicosController',
         )
     ),
     
