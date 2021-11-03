@@ -3,6 +3,7 @@
 namespace AgendaApi\Controller;
 
 use AgendaApi\Model\Servicos\ServicosTable;
+use Zend\Http\Headers;
 use Zend\View\Model\JsonModel;
 
 class ServicosController extends AbstractRestfulJsonController
@@ -12,6 +13,7 @@ class ServicosController extends AbstractRestfulJsonController
     
     public function __construct()
     {
+
     }
     
     public function getList()

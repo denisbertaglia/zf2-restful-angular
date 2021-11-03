@@ -4,6 +4,7 @@ namespace AgendaApi\Controller;
 
 use AgendaApi\Model\Agendamento\AgendamentoTable;
 use AgendaApi\Model\Servicos\ServicosTable;
+use Zend\Http\Headers;
 use Zend\View\Model\JsonModel;
 
 class AgendamentoController extends AbstractRestfulJsonController
@@ -16,12 +17,15 @@ class AgendamentoController extends AbstractRestfulJsonController
     
     public function __construct()
     {
+
     }
     
     public function getList()
     {   
+
         $agendamento = $this->getAgendaTable();
         $data = $agendamento->fetchAll()->toArray();
+        
         return new JsonModel(
             array(
                 'data' => $data,
