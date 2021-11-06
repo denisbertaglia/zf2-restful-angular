@@ -2,8 +2,7 @@
 
 namespace AgendaApi\Controller;
 
-use AgendaApi\Model\Agendamento\AgendamentoTable;
-use AgendaApi\Model\Servicos\ServicosTable;
+use AgendaApi\Model\Consultores\ConsultoresTable;
 use Zend\View\Model\JsonModel;
 
 class ConsultoresController extends AbstractRestfulJsonController
@@ -20,8 +19,8 @@ class ConsultoresController extends AbstractRestfulJsonController
     
     public function getList()
     {   
-        $agendamento = $this->getAgendaTable();
-        $data = $agendamento->fetchAll()->toArray();
+        $consultores = $this->getConsuloresTable();
+        $data = $consultores->fetchAll()->toArray();
         return new JsonModel(
             array(
                 'data' => $data,
@@ -30,27 +29,15 @@ class ConsultoresController extends AbstractRestfulJsonController
     }
     
     /**
-     * @return AgendamentoTable
+     * @return ConsultoresTable
      */
-    public function getAgendaTable()
+    public function getConsuloresTable()
     {
         if(!$this->agendaTable){
             $sm = $this->getServiceLocator();
-            $this->agendaTable = $sm->get('AgendaTable');
+            $this->agendaTable = $sm->get('ConsultoresTable');
         }
         return $this->agendaTable;
-    }
-    
-    /**
-     * @return ServicosTable
-     */
-    public function getServicosTable()
-    {
-        if(!$this->servicosTable){
-            $sm = $this->getServiceLocator();
-            $this->servicosTable = $sm->get('ServicosTable');
-        }
-        return $this->servicosTable;
     }
 
 }

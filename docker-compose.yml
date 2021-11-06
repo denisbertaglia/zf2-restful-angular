@@ -5,7 +5,7 @@ zf:
    - "8082:80"
    - "8083:81"
   volumes:
-   - .:/var/www
+   - .:/var/www:rw
 ui:
   build: .
   dockerfile: Dockerfile.ui

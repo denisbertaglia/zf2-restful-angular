@@ -1,10 +1,10 @@
 <?php
 
-namespace AgendaApi\Model\Servicos;
+namespace AgendaApi\Model\Consultores;
 
 use AgendaApi\Model\AbstractModel;
 
-class Servicos  extends AbstractModel 
+class Consultores  extends AbstractModel 
 {
     /**
      * @var int
@@ -14,9 +14,12 @@ class Servicos  extends AbstractModel
     /**
      * @var string
      */
-    protected $descricao;
+    protected $nome;
 
-
+    /**
+     * @var string
+     */
+    protected $email;
 
     /**
      * {@inheritDoc}
@@ -37,9 +40,16 @@ class Servicos  extends AbstractModel
     /**
      * {@inheritDoc}
      */
-    public function getDescricao()
+    public function getNome()
     {
-        return $this->descricao;
+        return $this->nome;
+    }
+    
+    public function setNome( $nome)
+    {
+        $this->nome = $nome;
+
+        return $this;
     }
 
     /**
@@ -50,11 +60,23 @@ class Servicos  extends AbstractModel
         $this->descricao = $descricao;
     }
 
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail( $email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
 
     public function exchangeArray(array $data)
     {
         $this->id = (!empty($data['id'])) ? $data['id']: null;
-        $this->descricao = (!empty($data['descricao'])) ? $data['descricao']: null;
+        $this->nome = (!empty($data['nome'])) ? $data['nome']: null;
+        $this->email = (!empty($data['email'])) ? $data['email']: null;
     }
 
     public function toArray()
@@ -62,8 +84,10 @@ class Servicos  extends AbstractModel
         
         return array(
             'id' => $this->getId(),
-            'descricao' => $this->getDescricao(),
+            'nome' => $this->getNome(),
+            'email' =>$this->getEmail()
         );
     }
+
 
 }

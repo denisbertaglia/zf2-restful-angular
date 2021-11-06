@@ -26,9 +26,7 @@ CREATE TABLE rel_servico_consultor
     id_consultor INTEGER
 );
 
-INSERT INTO rel_servico_consultor (id_servico, id_consultor) VALUES(1,4);
-INSERT INTO rel_servico_consultor (id_servico, id_consultor) VALUES(1,5);
-INSERT INTO rel_servico_consultor (id_servico, id_consultor) VALUES(2,1);
+
 
 CREATE TABLE Agendamento 
 (

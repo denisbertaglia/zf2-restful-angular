@@ -27,12 +27,25 @@ return array(
                     ),
                 ),
             ),
+            'consultores' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/v1/consultores[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'AgendaApi\Controller\Consultores',
+                    ),
+                ),
+            ),
         ),
     ),
     'controllers' => array(
         'invokables' => array(
             'AgendaApi\Controller\Agendamento' => 'AgendaApi\Controller\AgendamentoController',
             'AgendaApi\Controller\Servicos' => 'AgendaApi\Controller\ServicosController',
+            'AgendaApi\Controller\Consultores' => 'AgendaApi\Controller\ConsultoresController',
         )
     ),
     

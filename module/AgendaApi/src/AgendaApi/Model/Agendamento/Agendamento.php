@@ -2,9 +2,12 @@
 
 namespace AgendaApi\Model\Agendamento;
 
+use AgendaApi\Model\AbstractModel;
 use AgendaApi\Model\ArrayInterface;
+use AgendaApi\Model\Consultores\Consultores;
+use AgendaApi\Model\Servicos\Servicos;
 
-class Agendamento implements ArrayInterface
+class Agendamento extends AbstractModel
 {
     /**
      * @var int
@@ -17,12 +20,12 @@ class Agendamento implements ArrayInterface
     protected $data;
 
     /**
-     * @var string
+     * @var Consultores
      */
     protected $consultor;
 
     /**
-     * @var string
+     * @var Servicos
      */
     protected $servico;
 
@@ -30,6 +33,11 @@ class Agendamento implements ArrayInterface
      * @var string
      */
     protected $emailCliente;
+
+    public function __construct()
+    {
+        $this->id = 0;
+    }
 
     /**
      * {@inheritDoc}
@@ -72,7 +80,7 @@ class Agendamento implements ArrayInterface
     }
 
     /**
-     * @param string $consultor
+     * @param Consultores $consultor
      */
     public function setConsulor($consultor)
     {
@@ -89,7 +97,7 @@ class Agendamento implements ArrayInterface
     }
 
     /**
-     * @param string $servico
+     * @param Servicos $servico
      */
     public function setServico($servico)
     {
@@ -115,23 +123,38 @@ class Agendamento implements ArrayInterface
 
     public function exchangeArray(array $data)
     {
-        $this->id = (!empty($data['id'])) ? $data['id']: null;
-        $this->data = (!empty($data['data'])) ? $data['data']: null;
-        $this->consultor = (!empty($data['consultor'])) ? $data['consultor']: null;
-        $this->servico = (!empty($data['servico'])) ? $data['servico']: null;
-        $this->emailCliente = (!empty($data['emailCliente'])) ? $data['emailCliente']: null;
+        $this->id = (!empty($data['id'])) ? $data['id'] : null;
+        $this->data = (!empty($data['data'])) ? $data['data'] : null;
+        $this->consultor = (!empty($data['consultor'])) ? $data['consultor'] : null;
+        $this->servico = (!empty($data['servico'])) ? $data['servico'] : null;
+        $this->emailCliente = (!empty($data['email_cliente'])) ? $data['email_cliente'] : null;
 
+        $consultor = new Consultores();
+        $consultorId = (!empty($data['Consultorid'])) ? $data['Consultorid'] : 0;
+        $consultorNome = (!empty($data['ConsultorNome'])) ? $data['ConsultorNome'] : null;
+        $consultorEmail = (!empty($data['ConsultorEmail'])) ? $data['ConsultorEmail'] : null;
+        $consultor->setId($consultorId);
+        $consultor->setNome($consultorNome);
+        $consultor->setEmail($consultorEmail);
+        
+        $servico = new Servicos();
+        $servicoId = (!empty($data['ServicoId'])) ? $data['ServicoId'] : 0;
+        $servicoDescricao = (!empty($data['ServicoDescricao'])) ? $data['ServicoDescricao'] : '';
+        $servico->setId($servicoId);
+        $servico->setDescricao($servicoDescricao);
+
+        $this->consultor = $consultor;
+        $this->servico = $servico;
     }
 
-    public function getArrayCopy()
+    public function toArray()
     {
-        return[
-            'id' => $this->id,
-            'data' => $this->data,
-            'consultor' => $this->consultor,
-            'servico' => $this->servico,
-            'email_cliente' => $this->emailCliente,
+        return [
+            'id' => $this->getId(),
+            'data' => $this->getData(),
+            'consultor' => $this->getConsultor()->toArray(),
+            'servico' => $this->getServico()->toArray(),
+            'email_cliente' => $this->getEmailCliente(),
         ];
     }
-
 }

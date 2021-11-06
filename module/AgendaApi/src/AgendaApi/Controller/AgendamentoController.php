@@ -2,18 +2,18 @@
 
 namespace AgendaApi\Controller;
 
-use AgendaApi\Model\Agendamento\AgendamentoTable;
-use AgendaApi\Model\Servicos\ServicosTable;
-use Zend\Http\Headers;
+use AgendaApi\Model\Agendamento\Agendamento;
+use AgendaApi\Model\Agendamento\AgendamentoFiltro;
+use AgendaApi\Model\Consultores\Consultores;
+use AgendaApi\Model\Servicos\Servicos;
+use AgendaApi\Service\Agendamento\AgendamentoService;
 use Zend\View\Model\JsonModel;
 
 class AgendamentoController extends AbstractRestfulJsonController
 {
-    /** @var $agendaTable AgendamentoTable */
-    public  $agendaTable;
-    
-    /** @var $servicosTable ServicosTable */
-    public  $servicosTable;
+
+    /** @var AgendamentoService $agendamentoService  */
+    public  $agendamentoService;
     
     public function __construct()
     {
@@ -22,10 +22,27 @@ class AgendamentoController extends AbstractRestfulJsonController
     
     public function getList()
     {   
-
-        $agendamento = $this->getAgendaTable();
-        $data = $agendamento->fetchAll()->toArray();
+        $params = $this->params()->fromQuery();
         
+        $filtro = new AgendamentoFiltro();
+        if(isset($params['consultorId'])){
+            $consultor = new Consultores();
+            $consultor->setId($params['consultorId']);
+            $filtro->setConsultor($consultor);
+        }
+        
+        if(isset($params['servicoId'])){
+            $servico = new Servicos();
+            $servico->setId($params['servicoId']);
+            $filtro->setServico($servico);
+        }
+        
+        if(isset($params['data'])){
+            $filtro->setData($params['data']);
+        }
+
+        $agendamentoService = $this->getAgendamentoService();
+        $data = $agendamentoService->verAgenda($filtro);
         return new JsonModel(
             array(
                 'data' => $data,
@@ -33,48 +50,40 @@ class AgendamentoController extends AbstractRestfulJsonController
         );
     }
 
-    public function get($id)
-    {   // Action used for GET requests with resource Id
-        return new JsonModel(array("data" => array('id' => 2, 'name' => 'Coda', 'band' => 'Led Zeppelin')));
-    }
-
     public function create($data)
     {   // Action used for POST requests
-        return new JsonModel(array('data' => array('id' => 3, 'name' => 'New Album', 'band' => 'New Band')));
-    }
+        
+        $agendamento = new Agendamento();
+        $agendamento->setId($data['id']);
+        $agendamento->setData($data['data']);
+        $agendamento->setEmailCliente($data['email_cliente']);
 
-    public function update($id, $data)
-    {   // Action used for PUT requests
-        return new JsonModel(array('data' => array('id' => 3, 'name' => 'Updated Album', 'band' => 'Updated Band')));
-    }
+        $consultor = new Consultores();
+        $consultor->setId($data['consultor']['id']);
+        $agendamento->setConsulor($consultor);
 
-    public function delete($id)
-    {   // Action used for DELETE requests
-        return new JsonModel(array('data' => 'album id 3 deleted'));
+        $service = new Servicos();
+        $service->setId($data['servico']['id']);
+        $agendamento->setServico($service);
+        
+        $agendamentoService = $this->getAgendamentoService();
+        $agendamentoService->agendar($agendamento);
+ 
+        $data = [];
+
+        return new JsonModel(array('data' => $data));
     }
     
     /**
-     * @return AgendamentoTable
+     * @return AgendamentoService
      */
-    public function getAgendaTable()
+    public function getAgendamentoService()
     {
-        if(!$this->agendaTable){
+        if(!$this->agendamentoService){
             $sm = $this->getServiceLocator();
-            $this->agendaTable = $sm->get('AgendaTable');
+            $this->agendamentoService = $sm->get('AgendamentoService');
         }
-        return $this->agendaTable;
-    }
-    
-    /**
-     * @return ServicosTable
-     */
-    public function getServicosTable()
-    {
-        if(!$this->servicosTable){
-            $sm = $this->getServiceLocator();
-            $this->servicosTable = $sm->get('ServicosTable');
-        }
-        return $this->servicosTable;
+        return $this->agendamentoService;
     }
 
 }
