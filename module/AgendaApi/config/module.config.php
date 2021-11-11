@@ -48,7 +48,6 @@ return array(
             'AgendaApi\Controller\Consultores' => 'AgendaApi\Controller\ConsultoresController',
         )
     ),
-    
     'db' => array(
         'driver' => 'Pdo',
         'dsn'    => sprintf('sqlite:%s/data/banco.db', realpath(getcwd())),
