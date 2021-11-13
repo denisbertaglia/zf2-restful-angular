@@ -16,9 +16,10 @@ export class AgendamentoListComponent implements OnInit {
 
   consultores = CONSULTOR;
   servicos = SERVICO;
+  teste= '';
 
   constructor() { }
-
+ 
   ngOnInit(): void {
   }
 

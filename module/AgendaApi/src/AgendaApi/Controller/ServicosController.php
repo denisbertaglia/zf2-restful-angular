@@ -15,7 +15,7 @@ class ServicosController extends AbstractRestfulJsonController
     
     public function __construct()
     {
-
+        
     }
     
     public function getList()

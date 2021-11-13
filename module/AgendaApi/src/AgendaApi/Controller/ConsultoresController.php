@@ -15,12 +15,14 @@ class ConsultoresController extends AbstractRestfulJsonController
     
     public function __construct()
     {
+        
     }
     
     public function getList()
     {   
         $consultores = $this->getConsuloresTable();
         $data = $consultores->fetchAll()->toArray();
+
         return new JsonModel(
             array(
                 'data' => $data,

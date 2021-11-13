@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
-
 import { Servico } from '../models/servico';
-
 import { environment } from '../../environments/environment';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +20,12 @@ export class ServicoService {
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   }
-  getServico(): Observable<Servico> {
-    return this.httpClient.get<Servico>(this.url)
+  getServico(): Observable<Servico[]> {
+    return this.httpClient.get<any>(this.url)
       .pipe(
         retry(2),
         catchError(this.handleError))
+        .pipe(map(data => { return data.data }))
   }
 
   handleError(error: HttpErrorResponse) {

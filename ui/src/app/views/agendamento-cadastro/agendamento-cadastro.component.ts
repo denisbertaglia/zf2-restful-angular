@@ -16,7 +16,7 @@ export class AgendamentoCadastroComponent implements OnInit {
 
   name = new FormControl('');
   consultores = CONSULTOR;
-  servicos = SERVICO;
+   servicos: Servico[] = [];
 
 
   constructor(private servicoService: ServicoService) {
@@ -24,8 +24,8 @@ export class AgendamentoCadastroComponent implements OnInit {
    }
 
    getServico() {
-    this.servicoService.getServico().subscribe((servico: Servico) => {
-     console.log(servico);
+    this.servicoService.getServico().subscribe((servico: Servico[]) => {
+     this.servicos = servico
     });
   }
 

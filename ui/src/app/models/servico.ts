@@ -1,3 +1,4 @@
 export interface Servico {
-    data: []
+    id: number,
+    descricao: string
 }
