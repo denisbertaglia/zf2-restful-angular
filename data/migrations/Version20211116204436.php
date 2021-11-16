@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20211111195459 extends AbstractMigration
+class Version20211116204436 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -16,13 +16,9 @@ class Version20211111195459 extends AbstractMigration
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $table = $schema->createTable('Consultores');
+        $table = $schema->createTable('Servicos');
         $table->addColumn('id', 'integer');
-        $table->addColumn('nome', 'string', [
-            'length' => 255,
-            'notnull' => true
-        ]);
-        $table->addColumn('email', 'string', [
+        $table->addColumn('descricao', 'string', [
             'length' => 255,
             'notnull' => true
         ]);
@@ -31,26 +27,44 @@ class Version20211111195459 extends AbstractMigration
 
     public function postUp(Schema $schema)
     {
-        $table = 'Consultores';
+        $table = 'Servicos';
         $this->connection->insert(
             $table,
             [
                 'id' => 1,
-                'nome' => "Aline Santos Ribeiro",
-                'email' => "aline.santos@gmail.com",
+                'descricao' => "Desenvolvimento de Landing Page"
             ]
         );
         $this->connection->insert(
             $table,
             [
                 'id' => 2,
-                'nome' => "Carolina de Oliveira",
-                'email' => "carol.oliv@gmail.com",
+                'descricao' => "Customização de CSS"
+            ]
+        );
+        $this->connection->insert(
+            $table,
+            [
+                'id' => 3,
+                'descricao' => "Instalação do Wordpress"
+            ]
+        );
+        $this->connection->insert(
+            $table,
+            [
+                'id' => 4,
+                'descricao' => "Desenvolvimento de Plugin"
+            ]
+        );
+        $this->connection->insert(
+            $table,
+            [
+                'id' => 5,
+                'descricao' => "Desenvolvimento de Tema"
             ]
         );
         parent::postUp($schema);
     }
-
 
     /**
      * @param Schema $schema
@@ -58,6 +72,6 @@ class Version20211111195459 extends AbstractMigration
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $schema->dropTable('Consultores');
+        $schema->dropTable('Servicos');
     }
 }
