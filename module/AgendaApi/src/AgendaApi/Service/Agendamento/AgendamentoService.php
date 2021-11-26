@@ -6,6 +6,7 @@ use AgendaApi\Model\Agendamento\Agendamento;
 use AgendaApi\Model\Agendamento\AgendamentoFiltro;
 use AgendaApi\Model\Agendamento\AgendamentoTable;
 use AgendaApi\Model\Consultores\ConsultoresTable;
+use DomainException;
 
 class AgendamentoService 
 {
@@ -21,6 +22,10 @@ class AgendamentoService
         $this->consultoresTable= $consultoresTable;
     }
 
+    /**
+     * @throws DomainException Codigo 0 se o consultor não esta habilitado para o serviço
+     * @throws DomainException Codigo 1 se o consultor não tem o dia livre
+     */
     public function agendar(Agendamento $agendamento)
     {
         $consultor = $agendamento->getConsultor();
@@ -31,7 +36,16 @@ class AgendamentoService
         if($servicoAutorizado && !$diaOcupado ){
             $this->agendaTable->saveAgendamento($agendamento);
         }
+        if(!$servicoAutorizado){
+            throw new DomainException("Este consultor não esta habilitado para este serviço.", 0);
+        }
+
+        if($diaOcupado){
+            throw new DomainException("Este consultor não tem este dia livre.", 1);
+        }
+        
     }
+    
     /**
      * @return array
      */

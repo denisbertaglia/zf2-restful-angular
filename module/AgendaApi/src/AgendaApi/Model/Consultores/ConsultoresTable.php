@@ -5,8 +5,8 @@ namespace AgendaApi\Model\Consultores;
 use AgendaApi\Model\Consultores\Consultores;
 use AgendaApi\Model\Servicos\Servicos;
 use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Sql\Expression;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
 
 class ConsultoresTable
 {
@@ -27,15 +27,16 @@ class ConsultoresTable
     }
 
     /**
-     * @return bool
+     * @return Select
      */
-    public function consultorPodeAgendarOServico(Servicos $servico, Consultores $consultor)
+    private function selectConsultor()
     {
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(
             [
                 'id',
                 'nome',
+                'email',
             ]
         );
         $sqlSelect->join(
@@ -43,6 +44,30 @@ class ConsultoresTable
             'rel_servico_consultor.id_consultor = Consultores.id',
             array()
         );
+        return $sqlSelect;
+    }
+
+    /**
+     * @return array
+     */
+    public function consultoresParaOServico(Servicos $servico)
+    {
+        $sqlSelect = $this->selectConsultor();
+        $servicoId = $servico->getId();
+        $sqlSelect->where->equalTo('rel_servico_consultor.id_servico', $servicoId);
+        /** @var ResultSet*/
+        $resultSet = $this->tableGateway
+            ->selectWith($sqlSelect);
+
+        return $resultSet->toArray();
+    }
+
+    /**
+     * @return bool
+     */
+    public function consultorPodeAgendarOServico(Servicos $servico, Consultores $consultor)
+    {
+        $sqlSelect = $this->selectConsultor();
         $servicoId = $servico->getId();
         $consultorId = $consultor->getId();
         $sqlSelect
@@ -52,6 +77,6 @@ class ConsultoresTable
             ->selectWith($sqlSelect)
             ->count();
 
-        return ($resultSet>=1);
+        return ($resultSet >= 1);
     }
 }

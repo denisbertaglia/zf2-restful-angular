@@ -28,6 +28,10 @@ class Version20211116210608 extends AbstractMigration
             'length' => 255,
             'notnull' => true
         ]);
+        $table->addColumn('email_cliente', 'string', [
+            'length' => 255,
+            'notnull' => true
+        ]);
         $table->setPrimaryKey(array('id'));
     }
 

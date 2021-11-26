@@ -19,7 +19,7 @@ class AgendamentoTable
     /**
      * @return Select
      */
-    public function selectAgendamento()
+    private function selectAgendamento()
     {
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(
@@ -133,7 +133,6 @@ class AgendamentoTable
         $id = (int) $agendamento->getId();
         if ($id == 0) {
             $this->tableGateway->insert($data);
-            //$po = $this->tableGateway->getAdapter()->getDriver()->getLastGeneratedValue();
         } else {
             if ($this->getAgendamento($id)) {
                 $this->tableGateway->update($data, array('id' => $id));

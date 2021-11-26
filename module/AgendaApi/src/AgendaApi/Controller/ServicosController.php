@@ -2,26 +2,32 @@
 
 namespace AgendaApi\Controller;
 
+use AgendaApi\Model\Consultores\Consultores;
 use AgendaApi\Model\Servicos\ServicosTable;
-use DateTimeInterface;
-use Zend\Http\Headers;
-use Zend\Validator\Date as ValidatorDate;
 use Zend\View\Model\JsonModel;
 
 class ServicosController extends AbstractRestfulJsonController
 {
-    /** @var $servicosTable ServicosTable */
+    /** @var ServicosTable $servicosTable */
     public  $servicosTable;
     
-    public function __construct()
-    {
-        
-    }
+    public function __construct() {}
     
     public function getList()
     {   
-        $agendamentoTable = $this->getServicosTable();
-        $data = $agendamentoTable->fetchAll()->toArray();
+        $servicoTable = $this->getServicosTable();
+        $params = $this->params()->fromQuery();
+        $data = [];
+
+        if (count($params) == 0) {
+            $data = $servicoTable->fetchAll()->toArray();
+        }
+
+        if (isset($params['consultorId'])) {
+            $consultor = new Consultores();
+            $consultor->setId($params['consultorId']);
+            $data = $servicoTable->servicosHabilitadosParaConsultor($consultor);
+        }
 
         return new JsonModel(
             array(

@@ -22,7 +22,7 @@ class Module
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
-        
+
         $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'onDispatchError'), 0);
         $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, array($this, 'onRenderError'), 0);
     }
@@ -41,7 +41,7 @@ class Module
     {
         return $this->getJsonModelError($e);
     }
-    
+
     public function getJsonModelError($e)
     {
         $error = $e->getError();
@@ -65,6 +65,7 @@ class Module
             'message'   => 'An error occurred during execution; please try again later.',
             'error'     => $error,
             'exception' => $exceptionJson,
+            'code' => -1,
         );
         if ($error == 'error-router-no-match') {
             $errorJson['message'] = 'Resource not found.';
@@ -74,10 +75,10 @@ class Module
 
         $e->setResult($model);
         $e->getResponse()->setStatusCode(500);
-        
+
         return $model;
     }
-    
+
     public function getAutoloaderConfig()
     {
         return array(
@@ -88,49 +89,49 @@ class Module
             ),
         );
     }
-    public function getServiceConfig(){
+    public function getServiceConfig()
+    {
         return array(
             'factories' => array(
-                'AgendaTable' =>  function($sm) {
+                'AgendaTable' =>  function ($sm) {
                     $tableGateway = $sm->get('AgendaTableGateway');
                     $table = new AgendamentoTable($tableGateway);
                     return $table;
                 },
-                'AgendaTableGateway'   =>  function($sm) {
+                'AgendaTableGateway'   =>  function ($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Agendamento());
                     return new TableGateway('Agendamento', $dbAdapter, null, $resultSetPrototype);
                 },
-                'ConsultoresTable' =>  function($sm) {
+                'ConsultoresTable' =>  function ($sm) {
                     $tableGateway = $sm->get('ConsultoresTableGateway');
                     $table = new ConsultoresTable($tableGateway);
                     return $table;
                 },
-                'ConsultoresTableGateway'   =>  function($sm) {;
+                'ConsultoresTableGateway'   =>  function ($sm) {;
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Consultores());
                     return new TableGateway('Consultores', $dbAdapter, null, $resultSetPrototype);
                 },
-                'ServicosTable' =>  function($sm) {
+                'ServicosTable' =>  function ($sm) {
                     $tableGateway = $sm->get('ServicosTableGateway');
                     $table = new ServicosTable($tableGateway);
                     return $table;
                 },
-                'ServicosTableGateway'   =>  function($sm) {;
+                'ServicosTableGateway'   =>  function ($sm) {;
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Servicos());
                     return new TableGateway('Servicos', $dbAdapter, null, $resultSetPrototype);
                 },
-                'AgendamentoService'   =>  function($sm) {;
+                'AgendamentoService'   =>  function ($sm) {;
                     $agendaTable = $sm->get('AgendaTable');
                     $consultoresTable = $sm->get('ConsultoresTable');
-                    return new AgendamentoService($agendaTable,$consultoresTable);
+                    return new AgendamentoService($agendaTable, $consultoresTable);
                 },
             ),
         );
-        
     }
 }

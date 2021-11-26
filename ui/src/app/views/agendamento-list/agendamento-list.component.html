@@ -1,41 +1,42 @@
 
 <mat-form-field appearance="fill">
-    <mat-label>Consultor</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let consultor of consultores" [value]="consultor.id">
-        {{consultor.nome}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  
-  <mat-form-field appearance="fill">
-    <mat-label>Serviço</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let servico of servicos" [value]="servico.id">
-        {{servico.descricao}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  
-  <mat-form-field appearance="fill">
-      <mat-label>Escolha a data</mat-label>
-      <input matInput [matDatepicker]="picker">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
+  <mat-label>Consultor</mat-label>
+  <mat-select [formControl]="consultorEscolhido">
+    <mat-option *ngFor="let consultor of consultores" [value]="consultor">
+      {{consultor.nome}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field appearance="fill">
+  <mat-label>Serviço</mat-label>
+  <mat-select [formControl]="servicoEscolhido">
+    <mat-option *ngFor="let servico of servicos" [value]="servico">
+      {{servico.descricao}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field appearance="fill">
+  <mat-label>Escolha a data</mat-label>
+  <input matInput [matDatepicker]="picker">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+<button mat-raised-button color="primary" type="submit">Filtrar</button>
 <mat-list>
-    <mat-list-item *ngFor="let agendamento of agendamentos" > 
-        <strong>Consultor:  {{teste}}</strong>
-       
-        {{agendamento.nome}} | 
-        <strong>Data: </strong>
-         {{agendamento.date}} | 
-        <strong>Serviço: </strong>
-        {{agendamento.date | date:'mediumDate'}}    
-        <strong>E-mail cliente:</strong>
-         {{agendamento.email}} | 
-        <strong>Servico: </strong>
-        {{agendamento.servico}}
-    </mat-list-item>
+  <mat-list-item *ngFor="let agendamento of agendamentos">
+    <strong>Consultor: </strong>
+
+    {{agendamento.nome}} |
+    <strong>Data: </strong>
+    {{agendamento.date}} |
+    <strong>Serviço: </strong>
+    {{agendamento.date | date:'mediumDate'}}
+    <strong>E-mail cliente:</strong>
+    {{agendamento.email}} |
+    <strong>Servico: </strong>
+    {{agendamento.servico}}
+  </mat-list-item>
 
 </mat-list>

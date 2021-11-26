@@ -14,30 +14,29 @@ class AgendamentoController extends AbstractRestfulJsonController
 
     /** @var AgendamentoService $agendamentoService  */
     public  $agendamentoService;
-    
+
     public function __construct()
     {
-
     }
-    
+
     public function getList()
-    {   
+    {
         $params = $this->params()->fromQuery();
-        
+
         $filtro = new AgendamentoFiltro();
-        if(isset($params['consultorId'])){
+        if (isset($params['consultorId'])) {
             $consultor = new Consultores();
             $consultor->setId($params['consultorId']);
             $filtro->setConsultor($consultor);
         }
-        
-        if(isset($params['servicoId'])){
+
+        if (isset($params['servicoId'])) {
             $servico = new Servicos();
             $servico->setId($params['servicoId']);
             $filtro->setServico($servico);
         }
-        
-        if(isset($params['data'])){
+
+        if (isset($params['data'])) {
             $filtro->setData($params['data']);
         }
 
@@ -52,7 +51,9 @@ class AgendamentoController extends AbstractRestfulJsonController
 
     public function create($data)
     {   // Action used for POST requests
-        
+        $retorno = [
+            'data' => []
+        ];
         $agendamento = new Agendamento();
         $agendamento->setId($data['id']);
         $agendamento->setData($data['data']);
@@ -65,25 +66,36 @@ class AgendamentoController extends AbstractRestfulJsonController
         $service = new Servicos();
         $service->setId($data['servico']['id']);
         $agendamento->setServico($service);
-        
-        $agendamentoService = $this->getAgendamentoService();
-        $agendamentoService->agendar($agendamento);
- 
-        $data = [];
 
-        return new JsonModel(array('data' => $data));
+        $agendamentoService = $this->getAgendamentoService();
+
+        try {
+            $agendamentoService->agendar($agendamento);
+        } catch (\DomainException $dm) {
+            $retorno = [
+                'errors' =>[
+                    'message'   => $dm->getMessage(),
+                    'code'     => $dm->getCode(),
+                ]
+            ];
+            /** @var Response $response  */
+            $response = $this->response;
+            $response->setStatusCode(400);
+            return new JsonModel($retorno);
+        }
+
+        return new JsonModel($retorno);
     }
-    
+
     /**
      * @return AgendamentoService
      */
     public function getAgendamentoService()
     {
-        if(!$this->agendamentoService){
+        if (!$this->agendamentoService) {
             $sm = $this->getServiceLocator();
             $this->agendamentoService = $sm->get('AgendamentoService');
         }
         return $this->agendamentoService;
     }
-
 }

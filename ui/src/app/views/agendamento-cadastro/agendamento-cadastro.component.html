@@ -1,26 +1,33 @@
+<form  (ngSubmit)="onSubmit()"  novalidate>
+  <mat-form-field appearance="fill">
+    <mat-label>Consultor</mat-label>
+    <mat-select [formControl]="consultorForm" required>
+      <mat-option *ngFor="let consultor of consultores" [value]="consultor">
+        {{consultor.nome}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
-<mat-form-field appearance="fill">
-  <mat-label>Consultor</mat-label>
-  <mat-select>
-    <mat-option *ngFor="let consultor of consultores" [value]="consultor.id">
-      {{consultor.nome}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Serviço</mat-label>
+    <mat-select [formControl]="servicoForm" required>
+      <mat-option *ngFor="let servico of servicos" [value]="servico">
+        {{servico.descricao}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
-<mat-form-field appearance="fill">
-  <mat-label>Serviço</mat-label>
-  <mat-select>
-    <mat-option *ngFor="let servico of servicos" [value]="servico.id">
-      {{servico.descricao}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-
-<mat-form-field appearance="fill">
+  <mat-form-field appearance="fill">
     <mat-label>Escolha a data</mat-label>
-    <input matInput [matDatepicker]="picker">
+    <input matInput [matDatepicker]="picker" [formControl]="dataPicker" required>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
-</mat-form-field>
-<button mat-button color="accent">Cadastrar</button>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Email do Cliente</mat-label>
+    <input type="email" matInput [formControl]="email"
+           placeholder="Ex. pat@example.com" required>
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit">Cadastrar</button>
+</form>

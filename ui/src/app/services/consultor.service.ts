@@ -1,40 +1,36 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators';
-import { Servico } from '../models/servico';
+import { catchError, map, retry } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { map } from 'rxjs/operators';
+import { Consultor } from '../models/consultor';
 import { ApiError } from './api-error';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServicoService {
+export class ConsultorService {
 
-  url = environment.apiUrl + 'servicos';
+  url = environment.apiUrl + 'consultores';
 
   constructor(private httpClient: HttpClient) {
   }
 
-  httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  }
-
-  getServico(): Observable<Servico[]> {
+  getConsultores(): Observable<Consultor[]> {
     return this.httpClient.get<any>(this.url)
       .pipe(
-        retry(2),
+        retry(1),
         catchError(this.handleError))
       .pipe(map(data => { return this.setDefault(data.data) }))
   }
 
-  private setDefault(data:Servico[] ):Servico[] {
-    let serviceDefault:Servico = {
+  private setDefault(data:Consultor[] ):Consultor[] {
+    let consultorDefault:Consultor = {
       id: 0,
-      descricao: "Nenhum"
+      nome: "Nenhum",
+      email:""
     } ;
-    return [serviceDefault, ...data];
+    return [consultorDefault, ...data];
   }
 
   handleError(error: HttpErrorResponse) {
@@ -56,4 +52,5 @@ export class ServicoService {
 
     return throwError(apiError);
   };
+
 }

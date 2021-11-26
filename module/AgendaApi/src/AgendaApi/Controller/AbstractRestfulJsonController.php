@@ -47,7 +47,7 @@ class AbstractRestfulJsonController extends AbstractRestfulController
 
     public function options()
     {
-        return $this->methodNotAllowed();
+        return ;
     }
 
     public function patch($id, $data)
