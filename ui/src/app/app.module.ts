@@ -20,6 +20,7 @@ import { MatListModule } from '@angular/material/list';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogComponent } from './views/dialog/dialog.component';
+import { LoadingInterceptor } from './interceptor/loading.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
