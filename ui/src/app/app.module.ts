@@ -17,9 +17,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { HttpClientModule } from '@angular/common/http';
-import {MatDialogModule} from '@angular/material/dialog';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MatDialogModule } from '@angular/material/dialog';
 import { DialogComponent } from './views/dialog/dialog.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -45,9 +47,12 @@ import { DialogComponent } from './views/dialog/dialog.component';
     MatListModule,
     HttpClientModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

@@ -1,3 +1,13 @@
+<ng-container *ngIf="loadingService.isLoading$ | async">
+  <div class="loading">
+    <div class="loading-box">
+      <h1>Aguarde</h1>
+      <mat-progress-spinner class="example-margin" mode="indeterminate">
+      </mat-progress-spinner>
+    </div>
+  </div>
+</ng-container>
+
 <h1>{{title}}</h1>
 <router-outlet></router-outlet>
 <mat-tab-group mat-align-tabs="start">

@@ -30,6 +30,8 @@ export class AgendamentoCadastroComponent implements OnInit {
       email: '',
       dataPicker: ''
     };
+  minDate: Date;
+  maxDate: Date;
 
   servicoForm = new FormControl(this._defaultValues.servico, [Validators.required, this.forbiddenId()]);
   consultorForm = new FormControl(this._defaultValues.consultor, [Validators.required, this.forbiddenId()]);
@@ -43,14 +45,44 @@ export class AgendamentoCadastroComponent implements OnInit {
     email: this.email,
   });
 
-  @Input() servicos: Servico[] = [];
-  @Input() consultores: Consultor[] = [];
+  private _servicos: Servico[] = [this._defaultValues.servico];
+  private _consultores: Consultor[] = [this._defaultValues.consultor];
+
   @Output() agendar = new EventEmitter<Agendamento>();
+
+  @Input()
+  set servicos(val: Servico[]) {
+    this._servicos = val;
+  }
+
+  get servicos(): Servico[] {
+    return this._servicos;
+  }
+
+  @Input()
+  set consultores(val: Consultor[]) {
+    this._consultores = val;
+  }
+
+  get consultores(): Consultor[] {
+    return this._consultores;
+  }
 
   constructor(
     fb: FormBuilder
   ) {
+    const currentDate = new Date();
+    let _minDate = new Date();
+    _minDate.setDate(currentDate.getDate() + 1);
+    this.minDate = _minDate;
+    let _maxDate = new Date();
+    _maxDate.setMonth(currentDate.getMonth()+6);
+    this.maxDate = _maxDate;
+    console.log(currentDate);
+    console.log(this.maxDate);
+    console.log(this.minDate);
   }
+
 
   ngOnInit(): void {
     this.onChanges();
@@ -67,7 +99,7 @@ export class AgendamentoCadastroComponent implements OnInit {
     };
   }
 
-  controladorFormulario(agenda: Agendamento,ddd:any): void {
+  controladorFormulario(agenda: Agendamento, ddd: any): void {
     console.log(agenda);
     console.log(ddd);
     if (agenda.servico.id === 0) {
@@ -82,7 +114,7 @@ export class AgendamentoCadastroComponent implements OnInit {
   onChanges(): void {
     this.cadastro.valueChanges.subscribe((agendamento: Agendamento) => {
       console.log('firstname value changed');
-      this.controladorFormulario(agendamento,this.cadastro.valid);
+      this.controladorFormulario(agendamento, this.cadastro.valid);
     })
   }
 
@@ -90,7 +122,7 @@ export class AgendamentoCadastroComponent implements OnInit {
     const data = this.cadastro.value;
 
     if (this.cadastro.valid) {
-    const date = new Date(data.dataPicker).toISOString();
+      const date = new Date(data.dataPicker).toISOString();
       let agendamento: Agendamento = {
         consultor: data.consultor,
         data: date,

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ServicoService } from 'src/app/services/servico.service';
 import { Consultor } from './models/consultor';
 import { Servico } from './models/servico';
@@ -8,11 +8,13 @@ import { Agendamento } from './models/agendamento';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent, DialogData } from './views/dialog/dialog.component';
 import { ApiError } from './services/api-error';
+import { LoadingService } from './services/loading.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   title = 'Atendimentos';
@@ -23,7 +25,8 @@ export class AppComponent {
     private servicoService: ServicoService,
     private consultorService: ConsultorService,
     private agendamentoService: AgendamentoService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public loadingService: LoadingService
   ) {
   }
 
@@ -40,7 +43,7 @@ export class AppComponent {
   }
 
   doAgendamento(agendamento: Agendamento) {
-    this.agendamentoService.postAgendamento(agendamento).subscribe(() => { 
+    this.agendamentoService.postAgendamento(agendamento).subscribe(() => {
       this.openDialog(
         {
           title: 'Agendamento',
@@ -63,6 +66,7 @@ export class AppComponent {
     const dialogRef = this.dialog.open(DialogComponent, {
       width: '50%',
       data,
+      disableClose: true,
     });
   }
 
