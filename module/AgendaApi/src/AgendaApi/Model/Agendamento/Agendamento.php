@@ -3,11 +3,11 @@
 namespace AgendaApi\Model\Agendamento;
 
 use AgendaApi\Model\AbstractModel;
-use AgendaApi\Model\ArrayInterface;
 use AgendaApi\Model\Consultores\Consultores;
+use AgendaApi\Model\IdModel;
 use AgendaApi\Model\Servicos\Servicos;
 
-class Agendamento extends AbstractModel
+class Agendamento extends AbstractModel implements IdModel
 {
     /**
      * @var int

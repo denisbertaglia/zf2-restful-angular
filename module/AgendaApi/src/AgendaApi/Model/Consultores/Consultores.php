@@ -3,8 +3,9 @@
 namespace AgendaApi\Model\Consultores;
 
 use AgendaApi\Model\AbstractModel;
+use AgendaApi\Model\IdModel;
 
-class Consultores  extends AbstractModel 
+class Consultores  extends AbstractModel implements IdModel
 {
     /**
      * @var int
@@ -20,6 +21,11 @@ class Consultores  extends AbstractModel
      * @var string
      */
     protected $email;
+
+    /**
+     * @var array
+     */
+    protected $servicos = [];
 
     /**
      * {@inheritDoc}
@@ -72,22 +78,41 @@ class Consultores  extends AbstractModel
         return $this;
     }
 
+    public function getServicos()
+    {
+        return $this->servicos;
+    }
+
+    public function setServicos($servicos)
+    {
+        $this->servicos = $servicos;
+
+        return $this;
+    }
+
+    public function addServico($servico)
+    {
+        $this->servicos[] = $servico;
+
+        return $this;
+    }
+
     public function exchangeArray(array $data)
     {
         $this->id = (!empty($data['id'])) ? $data['id']: null;
         $this->nome = (!empty($data['nome'])) ? $data['nome']: null;
         $this->email = (!empty($data['email'])) ? $data['email']: null;
+        $this->servicos = (!empty($data['servicos'])) ? $data['servicos']: [];
     }
 
     public function toArray()
     {
-        
         return array(
             'id' => $this->getId(),
             'nome' => $this->getNome(),
-            'email' =>$this->getEmail()
+            'email' =>$this->getEmail(),
+            'servicos' => $this->getServicos(),
         );
     }
-
 
 }

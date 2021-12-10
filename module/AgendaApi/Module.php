@@ -105,8 +105,9 @@ class Module
                     return new TableGateway('Agendamento', $dbAdapter, null, $resultSetPrototype);
                 },
                 'ConsultoresTable' =>  function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $tableGateway = $sm->get('ConsultoresTableGateway');
-                    $table = new ConsultoresTable($tableGateway);
+                    $table = new ConsultoresTable($tableGateway, $dbAdapter);
                     return $table;
                 },
                 'ConsultoresTableGateway'   =>  function ($sm) {;

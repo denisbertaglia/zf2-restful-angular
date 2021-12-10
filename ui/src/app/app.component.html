@@ -12,10 +12,10 @@
 <router-outlet></router-outlet>
 <mat-tab-group mat-align-tabs="start">
   <mat-tab label="Agenda">
-    <app-agendamento-list [servicos]="servicos" [consultores]="consultores"></app-agendamento-list>
+    <app-agendamento-list [agendamento]="agendamento" ></app-agendamento-list>
   </mat-tab>
   <mat-tab label="Agendamento">
-    <app-agendamento-cadastro [servicos]="servicos" [consultores]="consultores" (agendar)="doAgendamento($event)">
+    <app-agendamento-cadastro [agendamento]="agendamento">
     </app-agendamento-cadastro>
   </mat-tab>
 </mat-tab-group>

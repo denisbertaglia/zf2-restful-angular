@@ -21,22 +21,25 @@ class ConsultoresController extends AbstractRestfulJsonController
     public function getList()
     {
         $consultores = $this->getConsuloresTable();
+
         $params = $this->params()->fromQuery();
         $data = [];
 
         if (count($params) == 0) {
-            $data = $consultores->fetchAll()->toArray();
+            $data = $consultores->fetchAll();
             return new JsonModel(
                 array(
                     'data' => $data,
                 )
             );
         }
+
         if (isset($params['servicoId'])) {
             $servico = new Servicos();
             $servico->setId($params['servicoId']);
             $data = $consultores->consultoresParaOServico($servico);
         }
+        
         return new JsonModel(
             array(
                 'data' => $data,

@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent, DialogData } from './views/dialog/dialog.component';
 import { ApiError } from './services/api-error';
 import { LoadingService } from './services/loading.service';
+import { AgendamentoComponenteData } from './views/agendamento-cadastro/agendamento-componente-data';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,10 @@ export class AppComponent {
   title = 'Atendimentos';
   servicos: Servico[] = [];
   consultores: Consultor[] = [];
+  agendamento: AgendamentoComponenteData ={
+    servicos:[],
+    consultores:[]
+  };
 
   constructor(
     private servicoService: ServicoService,
@@ -32,34 +37,16 @@ export class AppComponent {
 
   getServico() {
     this.servicoService.getServico().subscribe((servico: Servico[]) => {
-      this.servicos = servico
+      this.servicos = servico;
+      this.agendamento.servicos = servico;
     });
   }
 
   getConsultores() {
     this.consultorService.getConsultores().subscribe((consultor: Consultor[]) => {
       this.consultores = consultor
+      this.agendamento.consultores = consultor;
     });
-  }
-
-  doAgendamento(agendamento: Agendamento) {
-    this.agendamentoService.postAgendamento(agendamento).subscribe(() => {
-      this.openDialog(
-        {
-          title: 'Agendamento',
-          message: 'Agendamento Realizado com sucesso.'
-        }
-      );
-    },
-      (apiError: ApiError) => {
-        this.openDialog(
-          {
-            title: 'Erro',
-            message: apiError.error.errors.message
-          }
-        );
-      });
-
   }
 
   openDialog(data: DialogData): void {

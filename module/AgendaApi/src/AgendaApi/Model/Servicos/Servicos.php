@@ -3,8 +3,9 @@
 namespace AgendaApi\Model\Servicos;
 
 use AgendaApi\Model\AbstractModel;
+use AgendaApi\Model\IdModel;
 
-class Servicos  extends AbstractModel 
+class Servicos  extends AbstractModel implements IdModel
 {
     /**
      * @var int

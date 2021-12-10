@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import { Servico } from '../models/servico';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 import { ApiError } from './api-error';
+import { Consultor } from '../models/consultor';
+
+export interface ServiceParamsFilter{
+  consultorId?:number
+}
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +26,22 @@ export class ServicoService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   }
 
-  getServico(): Observable<Servico[]> {
-    return this.httpClient.get<any>(this.url)
+  getServico(filter:ServiceParamsFilter = {}): Observable<Servico[]> {
+    let params = new HttpParams();
+    if( filter.consultorId !== undefined){
+      console.log(filter);
+      params = params.set("consultorId",filter.consultorId);
+    }
+    
+    return this.httpClient.get<any>(this.url,{params: params})
       .pipe(
         retry(2),
         catchError(this.handleError))
       .pipe(map(data => { return this.setDefault(data.data) }))
+  }
+
+  getServicoByConsultor(id:number): Observable<Servico[]>  {
+    return this.getServico({ consultorId: id });
   }
 
   private setDefault(data:Servico[] ):Servico[] {

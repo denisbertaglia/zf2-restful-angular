@@ -1,8 +1,8 @@
-<form  (ngSubmit)="onSubmit()"  novalidate>
+<form [formGroup]="cadastro" (ngSubmit)="onSubmit()"  novalidate>
   <mat-form-field appearance="fill">
     <mat-label>Consultor</mat-label>
-    <mat-select [formControl]="consultorForm" required>
-      <mat-option *ngFor="let consultor of consultores" [value]="consultor">
+    <mat-select formControlName="consultor" required>
+      <mat-option  *ngFor="let consultor of consultores" [value]="consultor.id" [disabled]="consultor.disabled">
         {{consultor.nome}}
       </mat-option>
     </mat-select>
@@ -10,8 +10,8 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Serviço</mat-label>
-    <mat-select [formControl]="servicoForm" required>
-      <mat-option *ngFor="let servico of servicos" [value]="servico">
+    <mat-select formControlName="servico" required>
+      <mat-option *ngFor="let servico of servicos" [value]="servico.id" [disabled]="servico.disabled">
         {{servico.descricao}}
       </mat-option>
     </mat-select>
@@ -19,14 +19,15 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Escolha a data</mat-label>
-    <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" [formControl]="dataPicker" required>
+    <input matInput [matDatepickerFilter]="filterData" [min]="minDate"  [matDatepicker]="picker" formControlName="data"
+    required>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
   <mat-form-field class="example-full-width" appearance="fill">
     <mat-label>Email do Cliente</mat-label>
-    <input type="email" matInput [formControl]="email"
+    <input type="email" matInput formControlName="email_cliente"
            placeholder="Ex. pat@example.com" required>
   </mat-form-field>
   <button mat-raised-button color="primary" type="submit">Cadastrar</button>
