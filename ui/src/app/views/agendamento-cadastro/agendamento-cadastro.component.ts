@@ -10,6 +10,7 @@ import { AgendamentoService } from 'src/app/services/agendamento.service';
 import { DialogComponent, DialogData } from '../dialog/dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ApiError } from 'src/app/services/api-error';
+import { ConsultorRuleService } from 'src/app/services/consultor-rule.service';
 
 @Component({
   selector: 'app-agendamento-cadastro',
@@ -48,14 +49,10 @@ export class AgendamentoCadastroComponent implements OnInit {
   }
 
   constructor(
-    fb: FormBuilder,
     private agendamentoService: AgendamentoService,
     public dialog: MatDialog,
+    private consultorService:ConsultorRuleService
   ) {
-    this._dataComponent = {
-      servicos: [],
-      consultores: []
-    };
     const currentDate = new Date();
     let _minDate = new Date();
     _minDate.setDate(currentDate.getDate() + 1);
@@ -69,6 +66,7 @@ export class AgendamentoCadastroComponent implements OnInit {
 
   resetForm(): void {
     this.filterData = this.filterDateDefault;
+    this._dataComponent = this.consultorService.resetData(this._dataComponent);
     this.cadastro.reset();
   }
 
@@ -106,13 +104,17 @@ export class AgendamentoCadastroComponent implements OnInit {
   }
 
   calendarioUpdate() {
-    this.cadastro.get('consultor')?.valueChanges.subscribe((consultorId) => {
-      this.getAgendamento({ info: consultorId });
+    const consultorForm = this.cadastro.get('consultor');
+    
+    consultorForm?.valueChanges.subscribe((consultorId) => {
+      if(consultorForm?.valid){
+        this.getAgendamento({ consultorId });
+      }
     });
   }
 
-  getAgendamento(teste: { info: number }) {
-    this.agendamentoService.listAgendamento({ consultorId: teste.info }).subscribe((agendamento: Agendamento[]) => {
+  getAgendamento(info: { consultorId: number }) {
+    this.agendamentoService.listAgendamento({ consultorId: info.consultorId }).subscribe((agendamento: Agendamento[]) => {
       let datasAgenda = agendamento.map((agenda: Agendamento) => {
         return new Date(agenda.data);
       });
@@ -126,85 +128,25 @@ export class AgendamentoCadastroComponent implements OnInit {
     });
   }
 
-  controladorFormulario(agenda: AgendamentoFormData, data: AgendamentoComponenteData): AgendamentoComponenteData {
-    const servicoId = agenda.servico;
-    const consultorId = agenda.consultor;
-    const consultor = this.consultores[consultorId];
-
-    if (consultorId !== 0) {
-      consultor.servicos?.map((consultorServico) => {
-        data.servicos = this.servicos?.map((servico) => {
-          if (consultorServico.id !== servico.id && servico.id !== 0) {
-            servico.disabled = true;
-          } else {
-            servico.disabled = false;
-          }
-          return servico;
-        });
-      });
-    } else {
-      data.servicos = this.servicos.map((servico) => {
-        servico.disabled = false;
-        return servico;
-      });
-    }
-
-    if (servicoId !== 0) {
-      data.consultores = this.consultores.map((consul) => {
-        consul.servicos?.map((servicoConsultor) => {
-          if (servicoConsultor.id !== servicoId && servicoConsultor.id !== 0) {
-            consul.disabled = true;
-          } else {
-            consul.disabled = false;
-          }
-        });
-        return consul;
-      });
-    } else {
-      data.consultores = data.consultores.map((consul) => {
-        consul.servicos?.map((servicoConsultor) => {
-          consul.disabled = false;
-        });
-        return consul;
-      });
-    }
-
-    if (consultorId === 0 && servicoId === 0) {
-      data.consultores = data.consultores.map((consultor) => {
-        consultor.disabled = false;
-        return consultor;
-      });
-      data.servicos = data.servicos.map((servico) => {
-        servico.disabled = false;
-        return servico;
-      });
-    }
-    return data;
-  }
-
   onChanges(): void {
     this.cadastro.valueChanges.subscribe((agendamento: AgendamentoFormData) => {
-      this._dataComponent = this.controladorFormulario(agendamento, this._dataComponent);
+      this._dataComponent = this.consultorService.controladorFormulario(agendamento, this._dataComponent);
     })
   }
 
   onSubmit(): void {
     const data = this.cadastro.value;
 
-    //if (this.cadastro.valid) {
-    const date = new Date(data.data).toISOString();
-    let agendamento: Agendamento = {
-      consultor: this.consultores[data.consultor],
-      data: date,
-      email_cliente: data.email_cliente,
-      servico: this.servicos[data.servico],
-    };
-
-    //this.cadastrar(agendamento);
-    console.log("----------*------------");
-    console.log(agendamento);
-    console.log("----------*------------");
-    //}
+    if (this.cadastro.valid) {
+      const date = new Date(data.data).toISOString();
+      let agendamento: Agendamento = {
+        consultor: this.consultores[data.consultor],
+        data: date,
+        email_cliente: data.email_cliente,
+        servico: this.servicos[data.servico],
+      };
+      this.cadastrar(agendamento);
+    }
     this.resetForm();
   }
 }
