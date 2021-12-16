@@ -4,13 +4,10 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Agendamento } from '../models/agendamento';
+import { AgendamentoParamsFilter } from './agendamento-params-filter';
 import { ApiError } from './api-error';
 
-export interface AgendamentoParamsFilter{
-  consultorId?:number;
-  servicoId?:number;
-  data?:string;
-}
+
 
 @Injectable({
   providedIn: 'root'
@@ -35,9 +32,8 @@ export class AgendamentoService {
   }
 
   listAgendamento(filter: AgendamentoParamsFilter): Observable<Agendamento[]> {
-
     let params = new HttpParams();
-    if( filter.consultorId !== undefined){
+    if( filter.consultorId !== undefined ){
       params = params.set("consultorId",filter.consultorId);
     }
     if( filter.servicoId !== undefined){

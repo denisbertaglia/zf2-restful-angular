@@ -10,6 +10,8 @@ import { DialogComponent, DialogData } from './views/dialog/dialog.component';
 import { ApiError } from './services/api-error';
 import { LoadingService } from './services/loading.service';
 import { AgendamentoComponenteData } from './views/agendamento-cadastro/agendamento-componente-data';
+import { filter } from 'rxjs/operators';
+import { AgendamentoParamsFilter } from './services/agendamento-params-filter';
 
 @Component({
   selector: 'app-root',
@@ -17,14 +19,16 @@ import { AgendamentoComponenteData } from './views/agendamento-cadastro/agendame
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class AppComponent {
   title = 'Atendimentos';
   servicos: Servico[] = [];
   consultores: Consultor[] = [];
-  agendamento: AgendamentoComponenteData ={
-    servicos:[],
-    consultores:[]
+  agendamento: AgendamentoComponenteData = {
+    servicos: [],
+    consultores: []
   };
+  agendamentoList: Agendamento[] = [];
 
   constructor(
     private servicoService: ServicoService,
@@ -46,6 +50,17 @@ export class AppComponent {
     this.consultorService.getConsultores().subscribe((consultor: Consultor[]) => {
       this.consultores = consultor
       this.agendamento.consultores = consultor;
+    });
+  }
+
+  getAgendamento(filterData: AgendamentoParamsFilter) {
+
+    console.log(this.constructor.name);
+    console.log('filterData');
+    console.log(filterData);
+
+    this.agendamentoService.listAgendamento(filterData).subscribe((agendamento: Agendamento[]) => {
+      this.agendamentoList = agendamento;
     });
   }
 

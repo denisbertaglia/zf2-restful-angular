@@ -36,11 +36,6 @@ class ServicosController extends AbstractRestfulJsonController
         );
     }
 
-    public function get($id)
-    {   // Action used for GET requests with resource Id
-        return new JsonModel(array("data" => array('id' => 2, 'name' => 'Coda', 'band' => 'Led Zeppelin')));
-    }
-
     /**
      * @return ServicosTable
      */

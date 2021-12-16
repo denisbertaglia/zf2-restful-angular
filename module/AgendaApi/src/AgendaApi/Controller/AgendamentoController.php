@@ -24,24 +24,25 @@ class AgendamentoController extends AbstractRestfulJsonController
         $params = $this->params()->fromQuery();
 
         $filtro = new AgendamentoFiltro();
-        if (isset($params['consultorId'])) {
+        if (isset($params['consultorId']) && $params['consultorId'] > 0) {
             $consultor = new Consultores();
             $consultor->setId($params['consultorId']);
             $filtro->setConsultor($consultor);
         }
 
-        if (isset($params['servicoId'])) {
+        if (isset($params['servicoId']) &&  $params['servicoId'] > 0) {
             $servico = new Servicos();
             $servico->setId($params['servicoId']);
             $filtro->setServico($servico);
         }
 
-        if (isset($params['data'])) {
+        if (isset($params['data']) &&  $params['data'] !== '') {
             $filtro->setData($params['data']);
         }
 
         $agendamentoService = $this->getAgendamentoService();
         $data = $agendamentoService->verAgenda($filtro);
+        
         return new JsonModel(
             array(
                 'data' => $data,

@@ -1,4 +1,4 @@
-<form [formGroup]="cadastro" (ngSubmit)="onSubmit()" novalidate>
+<form [formGroup]="filtro" (ngSubmit)="onSubmit()" novalidate>
 
   <mat-form-field appearance="fill">
     <mat-label>Consultor</mat-label>
@@ -20,26 +20,34 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Escolha a data</mat-label>
-    <input matInput [matDatepicker]="picker">
+    <input matInput [matDatepicker]="picker" formControlName="data">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
   <button mat-raised-button color="primary" type="submit">Filtrar</button>
-  <mat-list>
-    <mat-list-item *ngFor="let agendamento of agendamentos">
-      <strong>Consultor: </strong>
-
-      {{agendamento.nome}} |
-      <strong>Data: </strong>
-      {{agendamento.date}} |
-      <strong>Serviço: </strong>
-      {{agendamento.date | date:'mediumDate'}}
-      agendamento.date | date:'mediumDate'}}
-      <strong>E-mail cliente:</strong>
-      {{agendamento.email}} |
-      <strong>Servico: </strong>
-      {{agendamento.servico}}
-    </mat-list-item>
-
-  </mat-list>
 </form>
+
+<table mat-table [dataSource]="agendamentos" class="table-relatorio">
+  <ng-container matColumnDef="consultor.nome">
+    <th mat-header-cell *matHeaderCellDef> Consultor </th>
+    <td mat-cell *matCellDef="let element"> {{element.consultor.nome}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="data">
+    <th mat-header-cell *matHeaderCellDef> Data Agendada</th>
+    <td mat-cell *matCellDef="let element"> {{element.data | date: 'dd/MM/yyyy' }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="servico.descricao">
+    <th mat-header-cell *matHeaderCellDef> Serviço</th>
+    <td mat-cell *matCellDef="let element"> {{element.servico.descricao}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="email_cliente">
+    <th mat-header-cell *matHeaderCellDef> Email Cliente </th>
+    <td mat-cell *matCellDef="let element"> {{element.email_cliente}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { AGENDAMENTOS } from 'src/app/mocks/agendamento/mock-agendamento';
 import { Servico } from 'src/app/models/servico';
@@ -9,6 +9,9 @@ import { AgendamentoService } from 'src/app/services/agendamento.service';
 import { ConsultorRuleService } from 'src/app/services/consultor-rule.service';
 import { AgendamentoFormData } from '../agendamento-cadastro/agendamento-form-data';
 
+import { AgendamentoParamsFilter } from 'src/app/services/agendamento-params-filter';
+import { Agendamento } from 'src/app/models/agendamento';
+
 
 @Component({
   selector: 'app-agendamento-list',
@@ -17,17 +20,22 @@ import { AgendamentoFormData } from '../agendamento-cadastro/agendamento-form-da
 })
 export class AgendamentoListComponent implements OnInit {
 
-  agendamentos = AGENDAMENTOS;
+  @Input()
+  agendamentos: Agendamento[] = [];
+  displayedColumns: string[] = ['consultor.nome', 'data', 'servico.descricao', 'email_cliente',];
 
-  cadastro = new FormGroup({
-    consultor: new FormControl(0, [ Validators.min(1)]),
-    servico: new FormControl(0, [Validators.min(1)]),
+  filtro = new FormGroup({
+    consultor: new FormControl(0),
+    servico: new FormControl(0),
+    data: new FormControl(''),
   });
 
   private _dataComponent: AgendamentoComponenteData = {
     servicos: [],
     consultores: []
   };
+
+  @Output() filtra: EventEmitter<AgendamentoParamsFilter> = new EventEmitter();
 
   @Input()
   set agendamento(data: AgendamentoComponenteData) {
@@ -44,18 +52,34 @@ export class AgendamentoListComponent implements OnInit {
 
   constructor(
     private agendamentoService: AgendamentoService,
-    private consultorService:ConsultorRuleService) { }
+    private consultorService: ConsultorRuleService) { }
 
   ngOnInit(): void {
     this.onChanges();
-  } 
+  }
 
-  onSubmit(){
+  filtrar(filtro: AgendamentoParamsFilter) {
+    this.filtra.emit(filtro);
+  }
+
+  onSubmit() {
+    let filtro = this.filtro;
+    if (filtro.valid) {
+      let data = '';
+      if (filtro.value.data !== '') {
+        data = new Date(filtro.value.data).toISOString();
+      }
+      this.filtrar({
+        consultorId: filtro.value.consultor,
+        servicoId: filtro.value.servico,
+        data: data,
+      });
+    }
 
   }
 
   onChanges(): void {
-    this.cadastro.valueChanges.subscribe((agendamento: AgendamentoFormData) => {
+    this.filtro.valueChanges.subscribe((agendamento: AgendamentoFormData) => {
       this._dataComponent = this.consultorService.controladorFormulario(agendamento, this._dataComponent);
     })
   }
