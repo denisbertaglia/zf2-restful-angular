@@ -11,6 +11,8 @@ import { AgendamentoParamsFilter } from 'src/app/services/agendamento-params-fil
 import { Agendamento } from 'src/app/models/agendamento';
 import { ServicoService } from 'src/app/services/servico.service';
 import { ConsultorService } from 'src/app/services/consultor.service';
+import { FeriadosNacionaisService } from 'src/app/services/feriados-nacionais.service';
+import { Feriado } from 'src/app/models/feriado';
 
 
 @Component({
@@ -30,7 +32,8 @@ export class AgendamentoListComponent implements OnInit {
     servico: new FormControl(0),
     data: new FormControl(''),
   });
-
+  feriados: Feriado[] = [];
+  
   private dataComponent: AgendamentoComponenteData = {
     servicos: [],
     consultores: []
@@ -50,13 +53,15 @@ export class AgendamentoListComponent implements OnInit {
 
   constructor(private consultorRuleService: ConsultorRuleService,
     private servicoService: ServicoService,
-    private consultorService: ConsultorService,) {
+    private consultorService: ConsultorService,
+    private feriadosService: FeriadosNacionaisService) {
   }
 
   ngOnInit(): void {
     this.onChanges();
     this.getConsultores();
     this.getServico();
+    this.getFeriados();
   }
 
   filtrar(filtro: AgendamentoParamsFilter) {
@@ -89,6 +94,12 @@ export class AgendamentoListComponent implements OnInit {
       this.dataComponent.consultores = consultor;
     });
   }
+  getFeriados() {
+    this.feriadosService.feriadosPorAno(2020).subscribe((data: Feriado[]) => {
+      this.feriados = data;
+    })
+  }
+
   onChanges(): void {
 
     this.filtro.valueChanges.subscribe((agendamento: AgendamentoFormData) => {

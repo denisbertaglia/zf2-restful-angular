@@ -18,15 +18,16 @@ export class FeriadosNacionaisService {
     headers: new HttpHeaders({ 'Content-type': 'application/json' })
   }
 
-  feriadosPorAno(ano: number): Observable<string[]> {
-    return this.httpClient.get<any>(this.url+ ano)
+  feriadosPorAno(ano: number): Observable<Feriado[]> {
+    return this.httpClient.get<Feriado[]>(this.url + ano)
       .pipe(
         retry(1),
         catchError(this.handleError)
-      )
-      .pipe(map(data => data[0]))
-      .pipe(map(data => data.date))
-       ;
+      ).pipe(map(feriados =>
+        feriados.map((feriado) => {
+          return { ...feriado, date: feriado.date + " 00:00:00" };
+        })
+      ));
   }
 
   handleError(error: HttpErrorResponse) {
@@ -38,8 +39,8 @@ export class FeriadosNacionaisService {
       // Erro ocorreu no lado do servidor
       errorMessage = `Código do erro: ${error.status}, ` + `menssagem: ${error.message}`;
     }
-    
-    const apiError: ApiError ={
+
+    const apiError: ApiError = {
       status: error.status,
       statusText: error.message,
       error: error.error,

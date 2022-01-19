@@ -13,12 +13,14 @@ import { ApiError } from 'src/app/services/api-error';
 import { ConsultorRuleService } from 'src/app/services/consultor-rule.service';
 import { ServicoService } from 'src/app/services/servico.service';
 import { ConsultorService } from 'src/app/services/consultor.service';
+import { Feriado } from 'src/app/models/feriado';
+import { FeriadosNacionaisService } from 'src/app/services/feriados-nacionais.service';
 
 @Component({
   selector: 'app-agendamento-cadastro',
   templateUrl: './agendamento-cadastro.component.html',
   styleUrls: ['./agendamento-cadastro.component.scss'],
-  providers:[ConsultorRuleService],
+  providers: [ConsultorRuleService],
 })
 export class AgendamentoCadastroComponent implements OnInit {
 
@@ -28,9 +30,11 @@ export class AgendamentoCadastroComponent implements OnInit {
   cadastro = new FormGroup({
     consultor: new FormControl(0, [Validators.required, Validators.min(1)]),
     servico: new FormControl(0, [Validators.required, Validators.min(1)]),
-    data: new FormControl('', [Validators.required]),
+    data: new FormControl({ value: '', disabled: true }, [Validators.required],),
     email_cliente: new FormControl('', [Validators.required, Validators.email]),
   });
+
+  feriados: Feriado[] = [];
 
   private dataComponent: AgendamentoComponenteData = {
     servicos: [],
@@ -49,23 +53,27 @@ export class AgendamentoCadastroComponent implements OnInit {
   constructor(
     private agendamentoService: AgendamentoService,
     public dialog: MatDialog,
-    private consultorRuleService:ConsultorRuleService, 
+    private consultorRuleService: ConsultorRuleService,
     private servicoService: ServicoService,
     private consultorService: ConsultorService,
+    private feriadosService: FeriadosNacionaisService
   ) {
-    
+
     const currentDate = new Date();
     let _minDate = new Date();
     _minDate.setDate(currentDate.getDate() + 1);
     this.minDate = _minDate;
     this.calendarioUpdate();
+
   }
 
   ngOnInit(): void {
     this.onChanges();
-    
     this.getConsultores();
     this.getServico();
+    this.getFeriados();
+    
+    this.cadastro.controls['data'].enable();
   }
 
   resetForm(): void {
@@ -74,10 +82,19 @@ export class AgendamentoCadastroComponent implements OnInit {
     this.cadastro.reset();
   }
 
-  private filterDateDefault(d: Date | null): boolean {
+  filterDateDefault(d: Date | null): boolean {
     const date = (d || new Date());
     const day = date.getDay();
-    return day !== 0 && day !== 6;
+    return (day !== 0 && day !== 6);
+  }
+
+  filtroferiado(d: Date | null): boolean {
+    const date = (d || new Date());
+    let isDataFeriado = this.feriados.find((feriado) => {
+      let result = date.valueOf() === new Date(feriado.date).setHours(0).valueOf();
+      return result;
+    })
+    return isDataFeriado === undefined;
   }
 
   openDialog(data: DialogData): void {
@@ -109,9 +126,8 @@ export class AgendamentoCadastroComponent implements OnInit {
 
   calendarioUpdate() {
     const consultorForm = this.cadastro.get('consultor');
-    
     consultorForm?.valueChanges.subscribe((consultorId) => {
-      if(consultorForm?.valid){
+      if (consultorForm?.valid) {
         this.getAgendamento({ consultorId });
       }
     });
@@ -127,7 +143,7 @@ export class AgendamentoCadastroComponent implements OnInit {
         let dataOcupada = datasAgenda.find((dataAgenda) => {
           return date.valueOf() === dataAgenda.valueOf();
         })
-        return this.filterDateDefault(d) && dataOcupada === undefined;
+        return this.filtroferiado(d) && this.filterDateDefault(d) && dataOcupada === undefined;
       };
     });
   }
@@ -142,6 +158,13 @@ export class AgendamentoCadastroComponent implements OnInit {
       this.dataComponent.consultores = consultor;
     });
   }
+  getFeriados() {
+    this.feriadosService.feriadosPorAno(2022).subscribe((data: Feriado[]) => {
+      this.feriados = data;
+      this.cadastro.controls['data'].enable();
+    })
+  }
+
   onChanges(): void {
     this.cadastro.valueChanges.subscribe((agendamento: AgendamentoFormData) => {
       this.dataComponent = this.consultorRuleService.controladorFormulario(agendamento, this.dataComponent);
