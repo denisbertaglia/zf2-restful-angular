@@ -1,22 +1,23 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import { AGENDAMENTOS } from 'src/app/mocks/agendamento/mock-agendamento';
 import { Servico } from 'src/app/models/servico';
 import { Consultor } from 'src/app/models/consultor';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AgendamentoComponenteData } from '../agendamento-cadastro/agendamento-componente-data';
-import { AgendamentoService } from 'src/app/services/agendamento.service';
 import { ConsultorRuleService } from 'src/app/services/consultor-rule.service';
 import { AgendamentoFormData } from '../agendamento-cadastro/agendamento-form-data';
 
 import { AgendamentoParamsFilter } from 'src/app/services/agendamento-params-filter';
 import { Agendamento } from 'src/app/models/agendamento';
+import { ServicoService } from 'src/app/services/servico.service';
+import { ConsultorService } from 'src/app/services/consultor.service';
 
 
 @Component({
   selector: 'app-agendamento-list',
   templateUrl: './agendamento-list.component.html',
-  styleUrls: ['./agendamento-list.component.scss']
+  styleUrls: ['./agendamento-list.component.scss'],
+  providers: [ConsultorRuleService],
 })
 export class AgendamentoListComponent implements OnInit {
 
@@ -30,32 +31,32 @@ export class AgendamentoListComponent implements OnInit {
     data: new FormControl(''),
   });
 
-  private _dataComponent: AgendamentoComponenteData = {
+  private dataComponent: AgendamentoComponenteData = {
     servicos: [],
     consultores: []
   };
 
+
   @Output() filtra: EventEmitter<AgendamentoParamsFilter> = new EventEmitter();
 
-  @Input()
-  set agendamento(data: AgendamentoComponenteData) {
-    this._dataComponent = data;
+  get servicos(): Servico[] {
+    return this.dataComponent.servicos;
   }
 
-  get servicos(): Servico[] {
-    return this._dataComponent.servicos;
-  }
 
   get consultores(): Consultor[] {
-    return this._dataComponent.consultores;
+    return this.dataComponent.consultores;
   }
 
-  constructor(
-    private agendamentoService: AgendamentoService,
-    private consultorService: ConsultorRuleService) { }
+  constructor(private consultorRuleService: ConsultorRuleService,
+    private servicoService: ServicoService,
+    private consultorService: ConsultorService,) {
+  }
 
   ngOnInit(): void {
     this.onChanges();
+    this.getConsultores();
+    this.getServico();
   }
 
   filtrar(filtro: AgendamentoParamsFilter) {
@@ -77,10 +78,21 @@ export class AgendamentoListComponent implements OnInit {
     }
 
   }
+  getServico() {
+    this.servicoService.getServico().subscribe((servico: Servico[]) => {
+      this.dataComponent.servicos = servico;
+    });
+  }
 
+  getConsultores() {
+    this.consultorService.getConsultores().subscribe((consultor: Consultor[]) => {
+      this.dataComponent.consultores = consultor;
+    });
+  }
   onChanges(): void {
+
     this.filtro.valueChanges.subscribe((agendamento: AgendamentoFormData) => {
-      this._dataComponent = this.consultorService.controladorFormulario(agendamento, this._dataComponent);
+      this.dataComponent = this.consultorRuleService.controladorFormulario(agendamento, this.dataComponent);
     })
   }
 }

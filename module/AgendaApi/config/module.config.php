@@ -6,10 +6,7 @@ return array(
             'agenda' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/v1/agendamento[/:id]',
-                    'constraints' => array(
-                        'id'     => '[0-9]+',
-                    ),
+                    'route'    => '/v1/agendamento',
                     'defaults' => array(
                         'controller' => 'AgendaApi\Controller\Agendamento',
                     ),
@@ -18,10 +15,7 @@ return array(
             'servicos' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/v1/servicos[/:id]',
-                    'constraints' => array(
-                        'id'     => '[0-9]+',
-                    ),
+                    'route'    => '/v1/servicos',
                     'defaults' => array(
                         'controller' => 'AgendaApi\Controller\Servicos',
                     ),
@@ -30,10 +24,7 @@ return array(
             'consultores' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/v1/consultores[/:id]',
-                    'constraints' => array(
-                        'id'     => '[0-9]+',
-                    ),
+                    'route'    => '/v1/consultores',
                     'defaults' => array(
                         'controller' => 'AgendaApi\Controller\Consultores',
                     ),

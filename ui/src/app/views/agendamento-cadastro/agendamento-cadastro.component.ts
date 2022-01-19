@@ -11,11 +11,14 @@ import { DialogComponent, DialogData } from '../dialog/dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ApiError } from 'src/app/services/api-error';
 import { ConsultorRuleService } from 'src/app/services/consultor-rule.service';
+import { ServicoService } from 'src/app/services/servico.service';
+import { ConsultorService } from 'src/app/services/consultor.service';
 
 @Component({
   selector: 'app-agendamento-cadastro',
   templateUrl: './agendamento-cadastro.component.html',
-  styleUrls: ['./agendamento-cadastro.component.scss']
+  styleUrls: ['./agendamento-cadastro.component.scss'],
+  providers:[ConsultorRuleService],
 })
 export class AgendamentoCadastroComponent implements OnInit {
 
@@ -29,30 +32,28 @@ export class AgendamentoCadastroComponent implements OnInit {
     email_cliente: new FormControl('', [Validators.required, Validators.email]),
   });
 
-  private _dataComponent: AgendamentoComponenteData = {
+  private dataComponent: AgendamentoComponenteData = {
     servicos: [],
     consultores: []
   };
   public filterData = this.filterDateDefault;
 
-  @Input()
-  set agendamento(data: AgendamentoComponenteData) {
-    this._dataComponent = data;
-  }
-
   get servicos(): Servico[] {
-    return this._dataComponent.servicos;
+    return this.dataComponent.servicos;
   }
 
   get consultores(): Consultor[] {
-    return this._dataComponent.consultores;
+    return this.dataComponent.consultores;
   }
 
   constructor(
     private agendamentoService: AgendamentoService,
     public dialog: MatDialog,
-    private consultorService:ConsultorRuleService
+    private consultorRuleService:ConsultorRuleService, 
+    private servicoService: ServicoService,
+    private consultorService: ConsultorService,
   ) {
+    
     const currentDate = new Date();
     let _minDate = new Date();
     _minDate.setDate(currentDate.getDate() + 1);
@@ -62,11 +63,14 @@ export class AgendamentoCadastroComponent implements OnInit {
 
   ngOnInit(): void {
     this.onChanges();
+    
+    this.getConsultores();
+    this.getServico();
   }
 
   resetForm(): void {
     this.filterData = this.filterDateDefault;
-    this._dataComponent = this.consultorService.resetData(this._dataComponent);
+    this.dataComponent = this.consultorRuleService.resetData(this.dataComponent);
     this.cadastro.reset();
   }
 
@@ -127,10 +131,20 @@ export class AgendamentoCadastroComponent implements OnInit {
       };
     });
   }
+  getServico() {
+    this.servicoService.getServico().subscribe((servico: Servico[]) => {
+      this.dataComponent.servicos = servico;
+    });
+  }
 
+  getConsultores() {
+    this.consultorService.getConsultores().subscribe((consultor: Consultor[]) => {
+      this.dataComponent.consultores = consultor;
+    });
+  }
   onChanges(): void {
     this.cadastro.valueChanges.subscribe((agendamento: AgendamentoFormData) => {
-      this._dataComponent = this.consultorService.controladorFormulario(agendamento, this._dataComponent);
+      this.dataComponent = this.consultorRuleService.controladorFormulario(agendamento, this.dataComponent);
     })
   }
 

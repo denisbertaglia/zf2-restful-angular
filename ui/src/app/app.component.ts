@@ -7,11 +7,10 @@ import { AgendamentoService } from './services/agendamento.service';
 import { Agendamento } from './models/agendamento';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent, DialogData } from './views/dialog/dialog.component';
-import { ApiError } from './services/api-error';
 import { LoadingService } from './services/loading.service';
 import { AgendamentoComponenteData } from './views/agendamento-cadastro/agendamento-componente-data';
-import { filter } from 'rxjs/operators';
 import { AgendamentoParamsFilter } from './services/agendamento-params-filter';
+import { FeriadosNacionaisService } from './services/feriados-nacionais.service';
 
 @Component({
   selector: 'app-root',
@@ -22,43 +21,22 @@ import { AgendamentoParamsFilter } from './services/agendamento-params-filter';
 
 export class AppComponent {
   title = 'Atendimentos';
-  servicos: Servico[] = [];
-  consultores: Consultor[] = [];
-  agendamento: AgendamentoComponenteData = {
-    servicos: [],
-    consultores: []
-  };
   agendamentoList: Agendamento[] = [];
-
   constructor(
-    private servicoService: ServicoService,
-    private consultorService: ConsultorService,
     private agendamentoService: AgendamentoService,
     public dialog: MatDialog,
-    public loadingService: LoadingService
+    public loadingService: LoadingService,
+    private feriadosService: FeriadosNacionaisService
   ) {
   }
 
-  getServico() {
-    this.servicoService.getServico().subscribe((servico: Servico[]) => {
-      this.servicos = servico;
-      this.agendamento.servicos = servico;
-    });
-  }
-
-  getConsultores() {
-    this.consultorService.getConsultores().subscribe((consultor: Consultor[]) => {
-      this.consultores = consultor
-      this.agendamento.consultores = consultor;
-    });
+  getFeriados() {
+    this.feriadosService.feriadosPorAno(2020).subscribe((data: any) => {
+      console.log(data);
+    })
   }
 
   getAgendamento(filterData: AgendamentoParamsFilter) {
-
-    console.log(this.constructor.name);
-    console.log('filterData');
-    console.log(filterData);
-
     this.agendamentoService.listAgendamento(filterData).subscribe((agendamento: Agendamento[]) => {
       this.agendamentoList = agendamento;
     });
@@ -73,8 +51,7 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
-    this.getConsultores();
-    this.getServico();
+    this.getFeriados();
   }
 
 }

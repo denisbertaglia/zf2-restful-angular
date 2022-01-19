@@ -1,12 +1,7 @@
 import { Injectable, Input } from '@angular/core';
-import { Consultor } from '../models/consultor';
-import { Servico } from '../models/servico';
 import { AgendamentoComponenteData } from '../views/agendamento-cadastro/agendamento-componente-data';
 import { AgendamentoFormData } from '../views/agendamento-cadastro/agendamento-form-data';
-
-@Injectable({
-  providedIn: 'root'
-})
+ 
 export class ConsultorRuleService {
 
   constructor() { }
@@ -15,7 +10,6 @@ export class ConsultorRuleService {
     const servicoId = agenda.servico;
     const consultorId = agenda.consultor;
     const consultor = data.consultores[consultorId];
-
     if (consultorId !== 0) {
       consultor.servicos?.map((consultorServico) => {
         data.servicos = data.servicos?.map((servico) => {
