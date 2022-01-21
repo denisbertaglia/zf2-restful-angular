@@ -1,10 +1,11 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map, retry } from 'rxjs/operators';
+import { merge, Observable, of, throwError } from 'rxjs';
+import { catchError, concatAll, map, mergeAll, mergeMap, retry } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Feriado } from '../models/feriado';
 import { ApiError } from './api-error';
+import { forkJoin } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,20 @@ export class FeriadosNacionaisService {
           return { ...feriado, date: feriado.date + " 00:00:00" };
         })
       ));
+  }
+
+  feriadosMultiplosAnos(anos: number[]): Observable<Feriado[]> {
+    return of(...anos)
+      .pipe(
+        map((ano)=>{
+          return this.httpClient.get<Feriado[]>(this.url + ano).pipe(map(feriados =>
+            feriados.map((feriado) => {
+              return { ...feriado, date: feriado.date + " 00:00:00" };
+            })
+          ));
+        })
+      )
+      .pipe(mergeAll());
   }
 
   handleError(error: HttpErrorResponse) {

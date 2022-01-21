@@ -15,6 +15,8 @@ import { ServicoService } from 'src/app/services/servico.service';
 import { ConsultorService } from 'src/app/services/consultor.service';
 import { Feriado } from 'src/app/models/feriado';
 import { FeriadosNacionaisService } from 'src/app/services/feriados-nacionais.service';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { concat } from 'rxjs';
 
 @Component({
   selector: 'app-agendamento-cadastro',
@@ -40,6 +42,7 @@ export class AgendamentoCadastroComponent implements OnInit {
     servicos: [],
     consultores: []
   };
+
   public filterData = this.filterDateDefault;
 
   get servicos(): Servico[] {
@@ -72,8 +75,6 @@ export class AgendamentoCadastroComponent implements OnInit {
     this.getConsultores();
     this.getServico();
     this.getFeriados();
-    
-    this.cadastro.controls['data'].enable();
   }
 
   resetForm(): void {
@@ -90,6 +91,7 @@ export class AgendamentoCadastroComponent implements OnInit {
 
   filtroferiado(d: Date | null): boolean {
     const date = (d || new Date());
+    
     let isDataFeriado = this.feriados.find((feriado) => {
       let result = date.valueOf() === new Date(feriado.date).setHours(0).valueOf();
       return result;
@@ -158,11 +160,28 @@ export class AgendamentoCadastroComponent implements OnInit {
       this.dataComponent.consultores = consultor;
     });
   }
+
   getFeriados() {
-    this.feriadosService.feriadosPorAno(2022).subscribe((data: Feriado[]) => {
-      this.feriados = data;
-      this.cadastro.controls['data'].enable();
+    const anoAtual = new Date().getFullYear();
+    const anosProximos = 2;
+    const proximosAnos = [...Array(anosProximos + 1).keys()].map(acrescimo => anoAtual + acrescimo);
+    this.feriadosService.feriadosMultiplosAnos(proximosAnos).subscribe((feriados: Feriado[]) => {
+      this.feriados.push(...feriados);
     })
+
+    this.filterData = (d: Date | null): boolean => {
+      const date = (d || new Date());
+      return this.filtroferiado(d) && this.filterDateDefault(d);
+    };
+    this.cadastro.controls['data'].enable();
+  }
+
+  bloquearFeriados() {
+    this.filterData = (d: Date | null): boolean => {
+      const date = (d || new Date());
+      return this.filtroferiado(d) && this.filterDateDefault(d);
+    };
+    this.cadastro.controls['data'].enable();
   }
 
   onChanges(): void {
@@ -173,7 +192,6 @@ export class AgendamentoCadastroComponent implements OnInit {
 
   onSubmit(): void {
     const data = this.cadastro.value;
-
     if (this.cadastro.valid) {
       const date = new Date(data.data).toISOString();
       let agendamento: Agendamento = {
@@ -183,7 +201,8 @@ export class AgendamentoCadastroComponent implements OnInit {
         servico: this.servicos[data.servico],
       };
       this.cadastrar(agendamento);
+
+      this.resetForm();
     }
-    this.resetForm();
   }
 }
