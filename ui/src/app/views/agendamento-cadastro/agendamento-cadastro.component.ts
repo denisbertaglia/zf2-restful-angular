@@ -91,7 +91,6 @@ export class AgendamentoCadastroComponent implements OnInit {
 
   filtroferiado(d: Date | null): boolean {
     const date = (d || new Date());
-    
     let isDataFeriado = this.feriados.find((feriado) => {
       let result = date.valueOf() === new Date(feriado.date).setHours(0).valueOf();
       return result;
@@ -167,7 +166,7 @@ export class AgendamentoCadastroComponent implements OnInit {
     const proximosAnos = [...Array(anosProximos + 1).keys()].map(acrescimo => anoAtual + acrescimo);
     this.feriadosService.feriadosMultiplosAnos(proximosAnos).subscribe((feriados: Feriado[]) => {
       this.feriados.push(...feriados);
-    })
+    });
 
     this.filterData = (d: Date | null): boolean => {
       const date = (d || new Date());

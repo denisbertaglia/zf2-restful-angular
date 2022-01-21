@@ -95,7 +95,7 @@ export class AgendamentoListComponent implements OnInit {
     });
   }
   getFeriados() {
-    this.feriadosService.feriadosPorAno(2020).subscribe((data: Feriado[]) => {
+    this.feriadosService.feriadosMultiplosAnos([2020]).subscribe((data: Feriado[]) => {
       this.feriados = data;
     })
   }
