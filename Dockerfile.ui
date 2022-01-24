@@ -1,8 +1,9 @@
 FROM node:16
 
 WORKDIR /var/www/ui
-RUN yarn global add  @angular/cli @angular-devkit/build-angular
+RUN yarn global add  @angular/cli @angular-devkit/build-angular npx
+ 
 
 #EXPOSE 4200
 
-CMD ["npm", "run", "build","--aot true","--configuration production"]
+#CMD ["npm", "run", "build","--aot true","--configuration production"]

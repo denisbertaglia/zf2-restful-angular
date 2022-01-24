@@ -2,55 +2,60 @@
 
 namespace AgendaApi\Controller;
 
-use AgendaApi\Model\Agendamento\AgendamentoTable;
-use AgendaApi\Model\Servicos\ServicosTable;
+use AgendaApi\Model\Consultores\ConsultoresTable;
+use AgendaApi\Model\Servicos\Servicos;
 use Zend\View\Model\JsonModel;
 
 class ConsultoresController extends AbstractRestfulJsonController
 {
     /** @var $agendaTable AgendamentoTable */
     public  $agendaTable;
-    
+
     /** @var $servicosTable ServicosTable */
     public  $servicosTable;
-    
+
     public function __construct()
     {
     }
-    
+
     public function getList()
-    {   
-        $agendamento = $this->getAgendaTable();
-        $data = $agendamento->fetchAll()->toArray();
+    {
+        $consultores = $this->getConsuloresTable();
+
+        $params = $this->params()->fromQuery();
+        $data = [];
+
+        if (count($params) == 0) {
+            $data = $consultores->fetchAll();
+            return new JsonModel(
+                array(
+                    'data' => $data,
+                )
+            );
+        }
+
+        if (isset($params['servicoId'])) {
+            $servico = new Servicos();
+            $servico->setId($params['servicoId']);
+            $data = $consultores->consultoresParaOServico($servico);
+        }
+        
         return new JsonModel(
             array(
                 'data' => $data,
             )
         );
     }
-    
+
     /**
-     * @return AgendamentoTable
+     * @return ConsultoresTable
      */
-    public function getAgendaTable()
+    public function getConsuloresTable()
     {
-        if(!$this->agendaTable){
+        if (!$this->agendaTable) {
             $sm = $this->getServiceLocator();
-            $this->agendaTable = $sm->get('AgendaTable');
+            $this->agendaTable = $sm->get('ConsultoresTable');
         }
         return $this->agendaTable;
     }
-    
-    /**
-     * @return ServicosTable
-     */
-    public function getServicosTable()
-    {
-        if(!$this->servicosTable){
-            $sm = $this->getServiceLocator();
-            $this->servicosTable = $sm->get('ServicosTable');
-        }
-        return $this->servicosTable;
-    }
-
 }

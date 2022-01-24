@@ -2,9 +2,10 @@
 
 namespace AgendaApi\Model\Servicos;
 
-use AgendaApi\Model\ArrayInterface;
+use AgendaApi\Model\AbstractModel;
+use AgendaApi\Model\IdModel;
 
-class Servicos implements ArrayInterface
+class Servicos  extends AbstractModel implements IdModel
 {
     /**
      * @var int
@@ -14,12 +15,8 @@ class Servicos implements ArrayInterface
     /**
      * @var string
      */
-    protected $nome;
+    protected $descricao;
 
-    /**
-     * @var string
-     */
-    protected $email;
 
 
     /**
@@ -59,15 +56,15 @@ class Servicos implements ArrayInterface
     {
         $this->id = (!empty($data['id'])) ? $data['id']: null;
         $this->descricao = (!empty($data['descricao'])) ? $data['descricao']: null;
-
     }
 
-    public function getArrayCopy()
+    public function toArray()
     {
-        return[
+        
+        return array(
             'id' => $this->getId(),
             'descricao' => $this->getDescricao(),
-        ];
+        );
     }
 
 }
