@@ -39,6 +39,7 @@ export class AgendamentoListComponent implements OnInit {
     consultores: []
   };
 
+  public filterData = this.filterDateDefault;
 
   @Output() filtra: EventEmitter<AgendamentoParamsFilter> = new EventEmitter();
 
@@ -95,9 +96,42 @@ export class AgendamentoListComponent implements OnInit {
     });
   }
   getFeriados() {
-    this.feriadosService.feriadosMultiplosAnos([2020]).subscribe((data: Feriado[]) => {
-      this.feriados = data;
+    const anoAtual = new Date().getFullYear();
+    const anosProximos = 2;
+    const proximosAnos = [...Array(anosProximos + 1).keys()].map(acrescimo => anoAtual + acrescimo);
+    const anosAnteriores = [...Array(anosProximos).keys()].reverse().map(decrecimo => (anoAtual-1) - decrecimo);
+    this.feriadosService.feriadosMultiplosAnos([...anosAnteriores,...proximosAnos]).subscribe((feriados: Feriado[]) => {
+      this.feriados.push(...feriados);
+    });
+
+    this.filterData = (d: Date | null): boolean => {
+      const date = (d || new Date());
+      return this.filtroferiado(d) && this.filterDateDefault(d);
+    };
+    this.filtro.controls['data'].enable();
+  }
+
+  bloquearFeriados() {
+    this.filterData = (d: Date | null): boolean => {
+      const date = (d || new Date());
+      return this.filtroferiado(d) && this.filterDateDefault(d);
+    };
+    this.filtro.controls['data'].enable();
+  }
+
+  filterDateDefault(d: Date | null): boolean {
+    const date = (d || new Date());
+    const day = date.getDay();
+    return (day !== 0 && day !== 6);
+  }
+
+  filtroferiado(d: Date | null): boolean {
+    const date = (d || new Date());
+    let isDataFeriado = this.feriados.find((feriado) => {
+      let result = date.valueOf() === new Date(feriado.date).setHours(0).valueOf();
+      return result;
     })
+    return isDataFeriado === undefined;
   }
 
   onChanges(): void {
