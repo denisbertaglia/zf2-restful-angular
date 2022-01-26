@@ -28,12 +28,17 @@ export class AgendamentoCadastroComponent implements OnInit {
 
   minDate: Date;
   calendario: Date[] = [];
-
+  cadastroDefaultValues ={
+    consultor: 0,
+    servico: 0,
+    data: '',
+    email_cliente: '',
+  };
   cadastro = new FormGroup({
-    consultor: new FormControl(0, [Validators.required, Validators.min(1)]),
-    servico: new FormControl(0, [Validators.required, Validators.min(1)]),
-    data: new FormControl({ value: '', disabled: true }, [Validators.required],),
-    email_cliente: new FormControl('', [Validators.required, Validators.email]),
+    consultor: new FormControl(this.cadastroDefaultValues.consultor, [Validators.required, Validators.min(1)]),
+    servico: new FormControl(this.cadastroDefaultValues.servico, [Validators.required, Validators.min(1)]),
+    data: new FormControl({ value: this.cadastroDefaultValues.data, disabled: true }, [Validators.required],),
+    email_cliente: new FormControl(this.cadastroDefaultValues.email_cliente, [Validators.required, Validators.email]),
   });
 
   feriados: Feriado[] = [];
@@ -79,8 +84,7 @@ export class AgendamentoCadastroComponent implements OnInit {
 
   resetForm(): void {
     this.filterData = this.filterDateDefault;
-    this.dataComponent = this.consultorRuleService.resetData(this.dataComponent);
-    this.cadastro.reset();
+    this.cadastro.setValue(this.cadastroDefaultValues);
   }
 
   filterDateDefault(d: Date | null): boolean {
@@ -191,6 +195,7 @@ export class AgendamentoCadastroComponent implements OnInit {
 
   onSubmit(): void {
     const data = this.cadastro.value;
+    
     if (this.cadastro.valid) {
       const date = new Date(data.data).toISOString();
       let agendamento: Agendamento = {
@@ -200,8 +205,7 @@ export class AgendamentoCadastroComponent implements OnInit {
         servico: this.servicos[data.servico],
       };
       this.cadastrar(agendamento);
-
-      this.resetForm();
     }
+    this.resetForm();
   }
 }
