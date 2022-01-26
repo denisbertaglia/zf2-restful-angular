@@ -12,7 +12,7 @@
 <router-outlet></router-outlet>
 <mat-tab-group mat-align-tabs="start">
   <mat-tab label="Agenda">
-    <app-agendamento-list  (filtra)="getAgendamento($event)" ></app-agendamento-list>
+    <app-agendamento-list  [agendamentos]="agendamentoList" (filtra)="getAgendamento($event)" ></app-agendamento-list>
   </mat-tab>
   <mat-tab label="Agendamento">
     <app-agendamento-cadastro >

@@ -73,7 +73,7 @@ export class AgendamentoListComponent implements OnInit {
     let filtro = this.filtro;
     if (filtro.valid) {
       let data = '';
-      if (filtro.value.data !== '') {
+      if (filtro.value.data) {
         data = new Date(filtro.value.data).toISOString();
       }
       this.filtrar({
